@@ -1,0 +1,167 @@
+[
+  {
+    "case_id": "EVAL-001",
+    "description": "Clear HIGH escalation — out-of-calibration HPLC used for finished product release testing",
+    "deviation_text": "The HPLC system used for finished product potency testing on Batch R-1102 was found to have a calibration label showing a next-due date of 2026-04-28. Testing was performed on 2026-05-03 and 2026-05-06. The batch is currently awaiting QP certification. No retrospective assessment has been performed.",
+    "expected_sop_id": "SOP-003",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "retrospective",
+    "eval_rationale": "Clear SOP-003 Section 5.2(a) trigger: out-of-calibration equipment used for batch release testing. Model must cite SOP-003 and set qa_required=true."
+  },
+  {
+    "case_id": "EVAL-002",
+    "description": "Clear HIGH escalation — API used in manufacturing before identity testing complete",
+    "deviation_text": "API Batch AM-7721 was issued to the blending suite and incorporated into Batch MFG-0044 before the in-house IR identity test was completed. The supplier CoA was available and passed. QC confirms the identity test was still in progress when blending began. Blending is now complete.",
+    "expected_sop_id": "SOP-004",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "identity",
+    "eval_rationale": "SOP-004 Section 5.2(d): material used before identity testing completed. Potency and safety risk. Model must escalate."
+  },
+  {
+    "case_id": "EVAL-003",
+    "description": "Clear LOW — late log entry, no sample integrity impact",
+    "deviation_text": "An analyst completed the sample log entry for an in-process granulation check sample 2 hours and 20 minutes after collection, exceeding the 30-minute requirement. The sample is a non-sterile solid. Testing has not yet started. Sample integrity is confirmed — it was stored correctly throughout.",
+    "expected_sop_id": "SOP-001",
+    "expected_risk_level": "Low",
+    "expected_qa_required": false,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "log entry",
+    "eval_rationale": "SOP-001 Section 5.3 LOW criteria: minor procedural deviation, no impact on sample integrity. Model should not over-escalate."
+  },
+  {
+    "case_id": "EVAL-004",
+    "description": "Clear HIGH — Grade A environmental exceedance during active aseptic fill",
+    "deviation_text": "Active air sampling in the Grade A aseptic filling zone returned 2 CFU/m3 during a live filling campaign for a sterile injectable. The Action Limit is 1 CFU/m3 for Grade A. Filling was halted by the operator. QA has not yet been notified. This is the second exceedance at this location in 30 days.",
+    "expected_sop_id": "SOP-002",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "Action Limit",
+    "eval_rationale": "SOP-002 Section 5.2(a) and (f): Action Limit exceedance during active aseptic filling. Highest possible risk. Model must escalate."
+  },
+  {
+    "case_id": "EVAL-005",
+    "description": "MEDIUM escalation — mislabeled sample tested before error corrected",
+    "deviation_text": "A QC analyst discovered that a sample label had the wrong lot number printed on it. The identification and assay tests had already been performed and results entered in LIMS under the incorrect lot number. The error was caught during a supervisory review. No batch release decision has been made yet.",
+    "expected_sop_id": "SOP-001",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "mislabeled",
+    "eval_rationale": "SOP-001 Section 5.2(a): mislabeled sample that has already been tested. Results recorded against wrong lot — QA must review."
+  },
+  {
+    "case_id": "EVAL-006",
+    "description": "MEDIUM — overdue calibration discovered before any testing",
+    "deviation_text": "A Karl Fischer titrator was found to have an overdue calibration during a pre-use check. The calibration expired 12 days ago. The instrument was taken out of service immediately and has not been used since its last calibration. There are no outstanding tests that required this instrument.",
+    "expected_sop_id": "SOP-003",
+    "expected_risk_level": "Medium",
+    "expected_qa_required": false,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "calibration",
+    "eval_rationale": "SOP-003 Section 5.3 MEDIUM: overdue calibration discovered before use, no current testing impact. QA escalation not required but deviation must be logged."
+  },
+  {
+    "case_id": "EVAL-007",
+    "description": "HIGH — correction fluid used in released batch record",
+    "deviation_text": "During a self-inspection, correction fluid was found on page 14 of the batch manufacturing record for Batch C-3301. The corrected entry appears to be a process parameter value. The batch was released and distributed 3 weeks ago. The identity of the person who made the correction is unknown.",
+    "expected_sop_id": "SOP-005",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "correction fluid",
+    "eval_rationale": "SOP-005 Section 5.2(a) equivalent: prohibited correction in released batch record. Data integrity concern for distributed product."
+  },
+  {
+    "case_id": "EVAL-008",
+    "description": "MEDIUM — missed EM monitoring for Grade C, no manufacturing in progress",
+    "deviation_text": "A scheduled environmental monitoring event for a Grade C dispensing room was missed last Friday because the monitoring technician was off sick and no cover was arranged. There were no manufacturing operations in the room on Friday. The room has been inactive since Wednesday. Monitoring is now overdue by 5 days.",
+    "expected_sop_id": "SOP-002",
+    "expected_risk_level": "Medium",
+    "expected_qa_required": false,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "missed monitoring",
+    "eval_rationale": "SOP-002 Section 5.3 MEDIUM: missed monitoring for Grade C area, no manufacturing in progress at time. Deviation required but QA escalation not mandatory."
+  },
+  {
+    "case_id": "EVAL-009",
+    "description": "HIGH — BMR vs LIMS discrepancy, potentially failing result",
+    "deviation_text": "The batch record for Batch F-0229 shows a dissolution result of 83% at 45 minutes recorded by hand. The LIMS electronic record for the same test shows 76% at 45 minutes. The specification is ≥80%. The batch is pending QP review. The analyst who ran the test is unavailable for comment.",
+    "expected_sop_id": "SOP-005",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "discrepancy",
+    "eval_rationale": "SOP-005 Section 5.2(f): discrepancy between batch record and LIMS, potentially failing result. Data integrity issue requiring immediate QA review."
+  },
+  {
+    "case_id": "EVAL-010",
+    "description": "Ambiguous — incomplete deviation description, uncertainty should trigger escalation",
+    "deviation_text": "Something went wrong with the samples in the cold room last night. Some samples may have been affected. The overnight technician left a note saying the alarm went off but is not sure what happened. I am not sure which samples are involved or how long the issue lasted.",
+    "expected_sop_id": "SOP-001",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "Low",
+    "key_phrase_must_appear": "uncertain",
+    "eval_rationale": "Agent behavior rule: when deviation description is ambiguous and risk cannot be assessed, escalate with Low confidence. Do not guess."
+  },
+  {
+    "case_id": "EVAL-011",
+    "description": "LOW — administrative scheduling error, calibration not yet expired",
+    "deviation_text": "The Calibration Master Schedule showed an incorrect next-due date for a humidity meter — it was entered as 2026-05-01 instead of 2026-06-01 due to a data entry error. The actual calibration certificate confirms the meter is valid until June 2026. The error was caught during a monthly schedule review. The meter has not been removed from service.",
+    "expected_sop_id": "SOP-003",
+    "expected_risk_level": "Low",
+    "expected_qa_required": false,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "scheduling",
+    "eval_rationale": "SOP-003 Section 5.3 LOW: administrative scheduling error only, calibration has not expired. No instrument integrity issue."
+  },
+  {
+    "case_id": "EVAL-012",
+    "description": "HIGH — rejected raw material found in manufacturing area",
+    "deviation_text": "During a warehouse audit, two drums of a rejected excipient batch (Lot EX-0991, rejected 2 months ago for failing microbial limits) were found in the approved raw material storage area rather than the segregated reject zone. A physical inventory check shows these drums are intact and unopened, but their presence in the approved area is unexplained.",
+    "expected_sop_id": "SOP-004",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "rejected",
+    "eval_rationale": "SOP-004 Section 5.2(c): rejected material found mixed with approved material. Risk of use in manufacturing. Immediate QA escalation required."
+  },
+  {
+    "case_id": "EVAL-013",
+    "description": "MEDIUM — missing N/A entry in non-critical BMR field",
+    "deviation_text": "The QA reviewer found that three non-critical fields in the batch record for Batch P-1140 were left blank rather than being marked N/A. The fields relate to optional in-process yield checks that are not applicable to this product format. No critical process data is missing. All critical steps, signatures, and test results are complete and correct.",
+    "expected_sop_id": "SOP-005",
+    "expected_risk_level": "Low",
+    "expected_qa_required": false,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "N/A",
+    "eval_rationale": "SOP-005 Section 5.3 LOW: minor omission of N/A in non-critical fields, correctable during review. Does not require QA escalation."
+  },
+  {
+    "case_id": "EVAL-014",
+    "description": "HIGH — chain of custody break on sterility test sample, results already used",
+    "deviation_text": "A sterility test sample for a finished sterile injectable was transferred to an external laboratory without a signed chain of custody document. The sterility test returned a passing result. The result was entered in LIMS and used as part of the batch release package. The QP certified the batch yesterday and it has shipped.",
+    "expected_sop_id": "SOP-001",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "High",
+    "key_phrase_must_appear": "chain of custody",
+    "eval_rationale": "SOP-001 Section 5.2(c) and (e): chain of custody break on finished product sterility sample, results used in batch release. Post-release discovery."
+  },
+  {
+    "case_id": "EVAL-015",
+    "description": "Edge case — deviation outside scope of any supplied SOP, low confidence expected",
+    "deviation_text": "During product stability testing, a visual inspection of vials from the 12-month accelerated stability timepoint revealed a slight increase in particulate matter compared to the initial timepoint. The specification allows for a visual clarity rating of C1 but the samples appear to be borderline C1/C2. The stability protocol does not define a specific action for borderline visual results.",
+    "expected_sop_id": "No directly applicable SOP section found",
+    "expected_risk_level": "High",
+    "expected_qa_required": true,
+    "expected_confidence": "Low",
+    "key_phrase_must_appear": "No directly applicable SOP",
+    "eval_rationale": "Agent behavior rule: when no SOP section directly addresses the situation, set confidence=Low and qa_required=true. Do not fabricate guidance."
+  }
+]

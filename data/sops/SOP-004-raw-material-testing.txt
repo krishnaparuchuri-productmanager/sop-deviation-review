@@ -1,0 +1,173 @@
+SOP-004: Raw Material Testing
+Version: 2.7 | Effective Date: 2025-02-10 | Review Date: 2027-02-10
+Department: Quality Control | Author: QC Manager
+
+================================================================================
+SECTION 1: PURPOSE
+================================================================================
+This SOP defines the procedures for receipt, sampling, testing, quarantine,
+and release or rejection of raw materials (active pharmaceutical ingredients,
+excipients, packaging components, and processing aids). No raw material shall
+be used in manufacturing unless it has been tested and formally released by
+Quality Control. Use of untested, quarantined, or rejected materials in
+manufacturing constitutes a critical deviation with immediate patient safety
+implications.
+
+================================================================================
+SECTION 2: SCOPE
+================================================================================
+This SOP applies to all raw materials, starting materials, excipients, reagents
+used in product manufacture, primary and secondary packaging components, and
+processing aids that come into direct or indirect contact with the product.
+It covers all stages from goods receipt to formal release or rejection.
+
+================================================================================
+SECTION 3: RESPONSIBILITIES
+================================================================================
+3.1 Warehouse / Goods Receipt Team
+    - Assign a unique Goods Receipt (GR) number to every incoming material.
+    - Apply a QUARANTINE label to all incoming materials immediately upon receipt.
+    - Do not accept materials whose containers are damaged, unsealed, or show
+      signs of contamination. Notify QC and QA immediately in such cases.
+    - Store materials under quarantine in the designated quarantine area.
+
+3.2 QC Sampling Analyst
+    - Sample materials per the approved sampling plan within 2 business days
+      of goods receipt.
+    - Maintain sample chain of custody per SOP-001 (Sample Management).
+
+3.3 QC Testing Analyst
+    - Perform all tests specified in the approved material specification.
+    - Record all results in the raw data notebook and LIMS on the day of testing.
+    - Report any out-of-specification (OOS) result to QC Supervisor immediately.
+
+3.4 QC Supervisor
+    - Review and approve test results in LIMS before label change is authorized.
+    - Initiate OOS investigation per SOP-007 for any failing result.
+
+3.5 Quality Assurance (QA)
+    - Provide final release or rejection authorization for all raw materials.
+    - Approve use of any material under a conditional or temporary waiver.
+    - Investigate use of untested or rejected material in manufacturing.
+
+================================================================================
+SECTION 4: PROCEDURE
+================================================================================
+4.1 Goods Receipt and Quarantine
+    4.1.1 Upon delivery, verify the supplier's certificate of analysis (CoA)
+          against the purchase order for: material name, grade, specification
+          version, lot number, and quantity.
+    4.1.2 Inspect containers for: physical damage, seal integrity, labeling
+          completeness, and evidence of pest or moisture ingress.
+    4.1.3 Reject the delivery without sampling if containers show signs of
+          tampering, damage, or contamination. Document on the Goods Receipt
+          Non-Conformance form and notify QA within 2 hours.
+    4.1.4 Apply a QUARANTINE label to all containers that pass the visual
+          inspection. Move to the designated quarantine zone.
+    4.1.5 Enter goods receipt details into the inventory system within 4 hours
+          of receipt. Materials must not leave quarantine without QC authorization.
+
+4.2 Sampling
+    4.2.1 Sample according to the approved sampling plan. The plan specifies:
+          number of containers to sample, sample size, sampling tool, and
+          required personal protective equipment.
+    4.2.2 For APIs and sterile excipients, sampling must be performed in a
+          controlled environment (Grade C minimum) using aseptic technique.
+    4.2.3 After sampling, re-seal all sampled containers with a tamper-evident
+          closure and re-label with the date sampled and sampler ID.
+    4.2.4 Submit samples to QC lab with a Sample Submission Form. The form
+          must reference the GR number and approved specification version.
+
+4.3 Testing
+    4.3.1 All raw materials must be tested against the full current approved
+          specification. Do not test against a superseded specification version.
+    4.3.2 Required tests for APIs always include: identification (IR, HPLC,
+          or wet chemistry), assay (potency), purity (related substances),
+          and residual solvents where applicable.
+    4.3.3 Required tests for excipients include at minimum: identification
+          and any specification limits for safety-critical parameters.
+    4.3.4 Supplier CoA results may support — but never replace — in-house
+          identity testing. Identity must always be confirmed in-house.
+    4.3.5 Record all raw data (instrument printouts, calculations, observations)
+          in the bound raw data notebook or LIMS electronic record on the day
+          of testing. Do not transcribe results from scratch paper or memory.
+
+4.4 Release and Rejection
+    4.4.1 When all results pass the approved specification, the QC Supervisor
+          approves the batch in LIMS and authorizes replacement of the
+          QUARANTINE label with an APPROVED label.
+    4.4.2 When any result fails the specification, initiate an OOS investigation
+          (SOP-007) before making a disposition decision. Do not reject without
+          investigation unless the failure is unambiguous and the material is
+          clearly non-conforming (e.g., wrong material delivered).
+    4.4.3 When a material is rejected, apply a REJECTED label to all containers,
+          move to the segregated reject area, and notify QA and Procurement.
+    4.4.4 Rejected materials must not re-enter the manufacturing area under
+          any circumstances, including for non-GMP or research purposes,
+          without written QA authorization.
+    4.4.5 Materials may not be used in manufacturing while under QUARANTINE
+          status or under OOS investigation. Any exception requires a
+          written waiver approved by QA and the Qualified Person (QP).
+
+4.5 Conditional Release (Waiver)
+    4.5.1 In exceptional circumstances, a material may be conditionally released
+          under a documented waiver if: testing is in progress, identity has been
+          confirmed, and a risk assessment supports limited use.
+    4.5.2 Any batch manufactured using a conditionally released material is placed
+          on hold pending final material test results.
+    4.5.3 If the material subsequently fails testing, the manufactured batch must
+          be quarantined and QA must perform a full impact assessment.
+
+================================================================================
+SECTION 5: DEVIATION CRITERIA AND ESCALATION TRIGGERS
+================================================================================
+5.1 The following events constitute a deviation and must be documented within
+    24 hours of discovery:
+
+    (a) Raw material used in manufacturing while under QUARANTINE status.
+    (b) Raw material used in manufacturing before identity testing was completed.
+    (c) Raw material used in manufacturing after it was formally REJECTED.
+    (d) Sampling not completed within 2 business days of goods receipt.
+    (e) Testing performed against a superseded or unapproved specification.
+    (f) Supplier CoA accepted as sole evidence of identity without in-house test.
+    (g) Damaged or unsealed containers accepted and sampled without QA notification.
+    (h) APPROVED label applied without QC Supervisor sign-off in LIMS.
+    (i) Rejected material found in the manufacturing area or in-process.
+
+5.2 Immediate Escalation to QA is required for:
+
+    (a) Any raw material used in manufacturing that was subsequently found
+        to have failed identity, assay, or purity testing.
+    (b) Use of a rejected or quarantined API in any manufacturing operation.
+    (c) Discovery of rejected material mixed with approved material in storage.
+    (d) Any batch manufactured using a material that was not tested in-house
+        for identity.
+    (e) Out-of-specification potency result on an API already incorporated
+        into an in-process or finished batch.
+    (f) Suspected adulteration or counterfeiting of any incoming material.
+    (g) Use of an expired raw material (past retest date) in manufacturing.
+
+5.3 Risk Classification Guide:
+    HIGH:   Any material used in manufacturing that failed or was not tested
+            for identity or potency; rejected material found in manufacturing;
+            suspected counterfeit or adulterated material; expired API used.
+    MEDIUM: Quarantine material used under an undocumented waiver; sampling
+            delay beyond 2 days with material still in quarantine; minor
+            documentation error on CoA verification with all tests passed.
+    LOW:    Administrative labeling error corrected before sampling; late
+            goods receipt entry with no impact on testing timeline.
+
+================================================================================
+SECTION 6: DOCUMENTATION REQUIREMENTS
+================================================================================
+6.1 Goods Receipt Record — completed within 4 hours of delivery.
+6.2 Goods Receipt Non-Conformance Form — for any rejected delivery.
+6.3 Sample Submission Form — accompanies every sample to the QC lab.
+6.4 Raw Data Notebook / LIMS Record — completed on day of testing.
+6.5 Certificate of Analysis (CoA) — filed with the batch record for each lot.
+6.6 Material Release / Rejection Record — QC Supervisor sign-off in LIMS.
+6.7 OOS Investigation Report — initiated within 2 hours of any failing result.
+6.8 Conditional Release Waiver — signed by QA and QP before material use.
+================================================================================
+END OF SOP-004
+================================================================================

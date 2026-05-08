@@ -1,0 +1,140 @@
+SOP-001: Sample Management
+Version: 3.2 | Effective Date: 2025-01-15 | Review Date: 2027-01-15
+Department: Quality Control | Author: QA Manager
+
+================================================================================
+SECTION 1: PURPOSE
+================================================================================
+This Standard Operating Procedure defines the requirements for the collection,
+labeling, handling, storage, transfer, and disposal of all samples within the
+facility. The purpose is to ensure sample integrity, maintain chain of custody,
+and prevent mix-ups, contamination, or loss of samples that could compromise
+product quality or patient safety.
+
+================================================================================
+SECTION 2: SCOPE
+================================================================================
+This SOP applies to all personnel who collect, handle, transport, or store
+samples including: in-process samples, finished product samples, raw material
+samples, environmental monitoring samples, reference standards, and retained
+samples. It covers all sample types: solid, liquid, semi-solid, and gaseous.
+
+================================================================================
+SECTION 3: RESPONSIBILITIES
+================================================================================
+3.1 Analyst / Sampling Technician
+    - Collect samples according to the approved sampling plan.
+    - Label all samples immediately upon collection using the approved label format.
+    - Record sample collection in the Sample Log within 30 minutes of collection.
+    - Report any deviation from this SOP to the QC Supervisor immediately.
+
+3.2 QC Supervisor
+    - Review Sample Log entries daily.
+    - Authorize sample disposal in the Sample Disposal Log.
+    - Escalate deviations involving potential patient safety impact to QA.
+
+3.3 Quality Assurance (QA)
+    - Review and approve deviations that cannot be resolved at supervisory level.
+    - Make final disposition decisions for samples involved in a deviation.
+    - Authorize destruction of samples under investigation only after review.
+
+================================================================================
+SECTION 4: PROCEDURE
+================================================================================
+4.1 Sample Collection
+    4.1.1 Verify the sampling plan is approved and current before collecting.
+    4.1.2 Use only designated, cleaned, and labeled sampling equipment.
+    4.1.3 Collect the volume/weight specified in the sampling plan. Do not
+          under-sample or over-sample without documented justification.
+    4.1.4 Collect duplicate samples when required by the testing protocol.
+    4.1.5 Record the date, time, location, batch number, and collector ID at
+          the point of collection. Do not backfill records from memory.
+
+4.2 Sample Labeling
+    4.2.1 Apply a pre-printed label immediately upon collection — never use
+          handwritten labels as the primary identifier.
+    4.2.2 Required label fields: Sample ID (unique), Material Name, Batch/Lot
+          Number, Collection Date and Time, Collector ID, Storage Condition,
+          Expiry Date (where applicable).
+    4.2.3 If a label error is discovered post-collection, quarantine the sample
+          immediately and notify the QC Supervisor before any testing proceeds.
+    4.2.4 Never overwrite, deface, or remove a sample label without QA approval.
+
+4.3 Sample Storage
+    4.3.1 Store samples in the designated area immediately after collection.
+          Do not leave samples unattended at room temperature unless the
+          storage condition explicitly permits it.
+    4.3.2 Temperature-sensitive samples must be stored within the specified
+          range: Refrigerated (2–8 °C), Frozen (≤ -20 °C), or Controlled
+          Room Temperature (15–25 °C). Verify storage temperature at transfer.
+    4.3.3 Log refrigerator/freezer temperature twice daily. If a temperature
+          excursion is detected, quarantine affected samples and notify QC
+          Supervisor and QA within 1 hour of discovery.
+    4.3.4 Retain samples must be stored in the designated Retain Room under
+          lock and key. Access is restricted to authorized personnel only.
+
+4.4 Chain of Custody
+    4.4.1 Every transfer of a sample between personnel or locations must be
+          recorded in the Chain of Custody Log. Include: transferring person,
+          receiving person, date, time, sample condition at transfer.
+    4.4.2 A sample that cannot account for all transfers in its chain of custody
+          is considered compromised and must be quarantined pending QA review.
+    4.4.3 Samples transferred to external laboratories must be accompanied by
+          a Chain of Custody document signed by both the sender and courier.
+
+4.5 Sample Disposal
+    4.5.1 Do not dispose of any sample until testing is complete and results
+          are approved, or until QA provides written authorization.
+    4.5.2 Hazardous samples must be disposed of per the Waste Management SOP
+          (SOP-012). Do not dispose of hazardous samples in general waste.
+    4.5.3 Record all disposals in the Sample Disposal Log, including date,
+          sample ID, and authorizing signature.
+
+================================================================================
+SECTION 5: DEVIATION CRITERIA AND ESCALATION TRIGGERS
+================================================================================
+5.1 The following events constitute a deviation from this SOP and must be
+    documented in the Deviation Report system within 24 hours of discovery:
+
+    (a) Sample collected without a valid, approved sampling plan.
+    (b) Mislabeled sample — any field on the label is incorrect or missing.
+    (c) Sample stored outside of specified temperature range for any duration.
+    (d) Break in chain of custody — any unrecorded transfer.
+    (e) Sample tested before label error was corrected and authorized by QA.
+    (f) Sample log entry completed more than 2 hours after collection.
+    (g) Sample container damaged, unsealed, or showing signs of contamination.
+    (h) Retained sample accessed without authorization.
+
+5.2 Immediate Escalation to QA is required (same business day) for:
+
+    (a) Any mislabeled sample that has already been tested and results reported.
+    (b) Temperature excursion affecting sterile or biological samples.
+    (c) Chain of custody break on any finished product or release sample.
+    (d) Suspected or confirmed sample mix-up between two different products.
+    (e) Any sample that may have been tested and results used for a batch release
+        decision where labeling or custody integrity is in question.
+    (f) Unauthorized access to the Retain Room.
+
+5.3 Risk Classification Guide:
+    HIGH:   Any deviation in 5.2 above; any deviation where results have
+            already been used in a batch release, regulatory submission,
+            or patient safety decision.
+    MEDIUM: Deviation corrected before testing; temperature excursion on
+            non-sterile, non-biological samples; late log entry with
+            corroborating documentation available.
+    LOW:    Minor procedural deviation with no impact on sample integrity,
+            discovered and corrected during the same work session.
+
+================================================================================
+SECTION 6: DOCUMENTATION REQUIREMENTS
+================================================================================
+6.1 Sample Log — completed within 30 minutes of collection.
+6.2 Chain of Custody Log — completed at every transfer.
+6.3 Temperature Monitoring Log — twice daily, calibrated thermometer.
+6.4 Sample Disposal Log — completed at time of disposal.
+6.5 Deviation Report — within 24 hours of discovery for any Section 5.1 event.
+6.6 All records must use permanent ink. Corrections: single strikethrough,
+    initials, date, and reason. Use of correction fluid (Tipp-Ex) is prohibited.
+================================================================================
+END OF SOP-001
+================================================================================

@@ -1,0 +1,18 @@
+# SOP Deviation Review Assistant — Backend Dependencies
+# Install with:
+#   python -m pip install --only-binary :all: -r backend/requirements.txt
+
+# --- Web framework ---
+fastapi==0.136.1
+uvicorn==0.46.0
+
+# --- LLM client ---
+anthropic==0.100.0
+
+# --- Retrieval (TF-IDF) ---
+scikit-learn==1.8.0
+numpy==2.4.4
+
+# --- Utilities ---
+python-dotenv==1.2.2
+pydantic==2.13.4

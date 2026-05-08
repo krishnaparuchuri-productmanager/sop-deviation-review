@@ -1,0 +1,148 @@
+SOP-002: Environmental Monitoring
+Version: 2.4 | Effective Date: 2025-03-01 | Review Date: 2027-03-01
+Department: Quality Control | Author: Microbiology Lead
+
+================================================================================
+SECTION 1: PURPOSE
+================================================================================
+This SOP defines the requirements for environmental monitoring (EM) of controlled
+manufacturing and laboratory areas, including cleanrooms, controlled environments,
+and associated support spaces. The purpose is to detect microbiological and
+particulate contamination trends, verify the effectiveness of cleaning and
+disinfection procedures, and protect product quality and patient safety.
+
+================================================================================
+SECTION 2: SCOPE
+================================================================================
+This SOP covers: active air sampling (using volumetric air samplers), passive
+air sampling (settle plates), surface contact sampling (contact plates and
+swabs), personnel monitoring (glove and gown sampling), and non-viable particle
+counting. It applies to all ISO-classified cleanrooms (ISO 5 through ISO 8)
+and Grade A–D areas as classified per EU GMP Annex 1.
+
+================================================================================
+SECTION 3: RESPONSIBILITIES
+================================================================================
+3.1 Microbiologist / EM Technician
+    - Execute the EM schedule per the approved Environmental Monitoring Plan.
+    - Record all results in the Environmental Monitoring Log on the same day.
+    - Immediately notify the QC Supervisor if any result exceeds an Alert Limit.
+    - Ensure sampling equipment is calibrated before each use.
+
+3.2 QC Supervisor
+    - Review EM results within 1 business day of receipt.
+    - Initiate trending review when three consecutive samples approach Alert Limits.
+    - Escalate Action Limit exceedances to QA within 2 hours of confirmation.
+
+3.3 Production Supervisor
+    - Halt production in the affected area upon notification of an Action Limit
+      exceedance until QA provides written clearance to resume.
+
+3.4 Quality Assurance (QA)
+    - Investigate all Action Limit exceedances and out-of-specification results.
+    - Review and approve Corrective Action and Preventive Action (CAPA) plans.
+    - Authorize resumption of manufacturing after an area exceedance event.
+
+================================================================================
+SECTION 4: PROCEDURE
+================================================================================
+4.1 Monitoring Schedule
+    4.1.1 Monitoring must be performed per the frequency defined in the approved
+          Environmental Monitoring Plan (EMP). Do not skip or defer scheduled
+          monitoring without documented justification approved by QA.
+    4.1.2 Monitoring must be performed during representative manufacturing
+          operations (at-rest and in-operation as defined in the EMP).
+    4.1.3 If scheduled monitoring is missed, document the reason in the EM Log
+          and notify QC Supervisor the same day. QA must approve any deviation
+          from the EMP frequency.
+
+4.2 Active Air Sampling
+    4.2.1 Use only calibrated RCS or slit-to-agar volumetric samplers.
+          Verify calibration status on the equipment tag before use.
+    4.2.2 Sample the specified volume of air (typically 1,000 litres for Grade A/B;
+          500 litres for Grade C/D) at each designated sample point.
+    4.2.3 Record: sample point ID, date, start time, sampler ID, volume sampled,
+          and operator ID.
+    4.2.4 Incubate plates at 30–35 °C for 48–72 hours, then 20–25 °C for
+          48–72 hours (dual-incubation). Do not skip the dual-incubation step.
+
+4.3 Settle Plates (Passive Air Sampling)
+    4.3.1 Expose 90 mm settle plates at designated points for the exposure time
+          specified in the EMP (typically 4 hours for Grade A/B).
+    4.3.2 Do not exceed maximum exposure time — extended exposure invalidates
+          the plate. Record actual exposure start and end times.
+    4.3.3 If a plate is accidentally disturbed during exposure, discard it,
+          document the event, and replace with a fresh plate if time permits.
+
+4.4 Surface and Contact Sampling
+    4.4.1 Take contact plate impressions of critical surfaces (filling needles,
+          stopper bowls, conveyor belts) after cleaning and disinfection,
+          immediately before production commences.
+    4.4.2 Take swab samples from irregular surfaces and hard-to-reach areas
+          per the EMP sampling map.
+    4.4.3 Allow contact plates to neutralize for 15 minutes before incubation
+          when disinfectant residue may be present.
+
+4.5 Personnel Monitoring
+    4.5.1 Sample gloves and gown surfaces of Grade A/B personnel after each
+          production operation and at exit from the cleanroom.
+    4.5.2 Positive personnel monitoring results must be investigated. The
+          individual must be re-trained before re-entering a Grade A/B area.
+
+4.6 Alert and Action Limits
+    4.6.1 Alert Limits (CFU) — Triggers investigation and increased monitoring:
+          Grade A: >0 CFU/m³ (air), >0 CFU/plate (settle), >0 CFU/plate (surface)
+          Grade B: >10 CFU/m³, >5 CFU/4h plate, >5 CFU/contact plate
+          Grade C: >100 CFU/m³, >50 CFU/4h plate, >25 CFU/contact plate
+          Grade D: >200 CFU/m³, >100 CFU/4h plate, >50 CFU/contact plate
+
+    4.6.2 Action Limits (CFU) — Triggers immediate CAPA and QA notification:
+          Grade A: >1 CFU (any method)
+          Grade B: >50 CFU/m³, >25 CFU/4h plate, >25 CFU/contact plate
+          Grade C: >200 CFU/m³, >100 CFU/4h plate, >50 CFU/contact plate
+          Grade D: >500 CFU/m³, >200 CFU/4h plate, >100 CFU/contact plate
+
+================================================================================
+SECTION 5: DEVIATION CRITERIA AND ESCALATION TRIGGERS
+================================================================================
+5.1 The following events constitute a deviation and must be documented within
+    24 hours of discovery:
+
+    (a) Scheduled EM event missed without prior QA approval.
+    (b) Sampling equipment used without current calibration verification.
+    (c) Incubation conditions (temperature or duration) outside specification.
+    (d) Settle plate exposure time exceeded by more than 10 minutes.
+    (e) Monitoring performed outside of the area or time window defined in EMP.
+    (f) Results not recorded in the EM Log on the day of sampling.
+
+5.2 Immediate Escalation to QA is required for:
+
+    (a) Any result at or above the Action Limit for any area grade.
+    (b) Any Grade A or Grade B exceedance, regardless of magnitude.
+    (c) Multiple consecutive Alert Limit exceedances (≥3) at the same location.
+    (d) Positive result on a personnel gown or glove sample.
+    (e) Discovery of a missed monitoring event for a Grade A/B area.
+    (f) Any contamination event coinciding with an active aseptic filling campaign.
+    (g) Identification of an objectionable organism (e.g., Burkholderia cepacia,
+        Staphylococcus aureus, mould) at any grade level.
+
+5.3 Risk Classification Guide:
+    HIGH:   Action Limit exceedance; any Grade A/B exceedance; objectionable
+            organism identified; event coinciding with active sterile production.
+    MEDIUM: Alert Limit exceedance in Grade C/D; missed monitoring for Grade C/D
+            area; incubation deviation with documented temperature records.
+    LOW:    Minor procedural deviation (e.g., late log entry) with no impact on
+            result validity; settle plate disturbed in Grade D area only.
+
+================================================================================
+SECTION 6: DOCUMENTATION REQUIREMENTS
+================================================================================
+6.1 Environmental Monitoring Log — completed same day as sampling.
+6.2 Equipment Calibration Check Log — before each sampling session.
+6.3 Incubation Log — temperature and duration recorded for every plate.
+6.4 Out-of-Specification (OOS) Report — raised within 2 hours of confirmed OOS.
+6.5 CAPA Record — initiated within 5 business days of QA escalation.
+6.6 Trending Report — monthly review submitted to QA by the 5th of each month.
+================================================================================
+END OF SOP-002
+================================================================================

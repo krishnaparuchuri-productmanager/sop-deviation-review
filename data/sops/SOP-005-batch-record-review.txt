@@ -1,0 +1,185 @@
+SOP-005: Batch Record Review
+Version: 3.0 | Effective Date: 2025-04-01 | Review Date: 2027-04-01
+Department: Quality Assurance | Author: QA Director
+
+================================================================================
+SECTION 1: PURPOSE
+================================================================================
+This SOP defines the requirements for the review, verification, and approval of
+batch manufacturing records (BMRs) and batch packaging records (BPRs) prior to
+batch disposition. A thorough batch record review ensures that each batch was
+manufactured and tested in compliance with the approved process, specifications,
+and regulatory requirements, and that all deviations have been identified,
+documented, investigated, and appropriately resolved before a release decision
+is made. No batch shall be released unless the batch record review is complete
+and the Qualified Person (QP) has provided written authorization.
+
+================================================================================
+SECTION 2: SCOPE
+================================================================================
+This SOP applies to all batch manufacturing records and batch packaging records
+for finished pharmaceutical products manufactured at this facility, including
+products for clinical trials, commercial release, and stability studies. It
+covers paper-based records, electronic records, and hybrid systems.
+
+================================================================================
+SECTION 3: RESPONSIBILITIES
+================================================================================
+3.1 Production / Manufacturing Operator
+    - Complete all entries in the BMR at the time of each operation.
+    - Correct errors using the approved method: single strikethrough, date,
+      initials, reason. Never use correction fluid or overwrite entries.
+    - Obtain a second-person verification signature for all critical steps
+      as designated in the BMR.
+
+3.2 Production Supervisor
+    - Review the completed BMR for completeness before submitting to QA.
+    - Ensure all in-process deviations are documented and a deviation report
+      number is referenced in the BMR before submission.
+
+3.3 QC Analyst / QC Manager
+    - Complete all analytical test results in LIMS before batch record review.
+    - Ensure the Certificate of Analysis (CoA) is attached to the batch record.
+    - Flag any OOS result to QA before the batch record is submitted for review.
+
+3.4 QA Reviewer
+    - Perform the formal batch record review per Section 4.
+    - Document all findings in the Batch Record Review Checklist.
+    - Escalate critical findings to the QA Manager immediately.
+    - Never approve a batch record that has unresolved deviations.
+
+3.5 Qualified Person (QP)
+    - Provide final written certification of each batch before release.
+    - The QP may not certify a batch where the batch record review has not
+      been completed and signed off by a QA Reviewer.
+
+================================================================================
+SECTION 4: PROCEDURE
+================================================================================
+4.1 Batch Record Completeness Check
+    4.1.1 Verify that all pages of the BMR are present and in the correct order.
+          Page numbers and total page count must be confirmed.
+    4.1.2 Confirm all required fields are completed. Blank fields are
+          not acceptable — fields that do not apply must be marked "N/A"
+          with the reviewer's initials.
+    4.1.3 Verify that all critical process steps have a second-person
+          verification signature where required by the BMR template.
+    4.1.4 Confirm all in-process dates and times are logical and consistent
+          (e.g., blending end time is after blending start time; no step
+          recorded before the preceding step was completed).
+    4.1.5 Verify that all in-process test results are within approved limits
+          and are signed by the performing analyst and the QC Supervisor.
+
+4.2 Error Correction Review
+    4.2.1 Review all corrections made to the BMR. Each correction must follow
+          the approved method: single line through the error so original text
+          is legible, correction written adjacent, initialed, dated, and
+          reason provided.
+    4.2.2 Corrections made using correction fluid, overwriting, or erasure
+          are not acceptable under any circumstances and require a formal
+          deviation report.
+    4.2.3 Multiple corrections clustered around a single step may indicate
+          a systemic issue. Escalate to QA Manager if more than 3 corrections
+          appear for the same process step.
+
+4.3 Deviation and Exception Review
+    4.3.1 Confirm that every deviation from the batch record instructions has
+          a corresponding deviation report number recorded in the BMR.
+    4.3.2 Verify that each referenced deviation report has been: opened,
+          investigated, root-cause identified, impact assessed, and closed
+          (or approved for batch release with open CAPA) before review.
+    4.3.3 A batch with an unresolved deviation of HIGH risk classification
+          must not be released until the deviation is closed or the QP
+          provides a written justification for release with open CAPA.
+    4.3.4 Verify that any deviation occurring during a critical step
+          (e.g., sterilization, aseptic filling, terminal sterilization)
+          has been reviewed and signed off by QA before the next step
+          was permitted to proceed.
+
+4.4 Analytical Results Review
+    4.4.1 Confirm that all finished product test results are present in LIMS
+          and that a printed CoA is attached to or referenced in the batch record.
+    4.4.2 Verify all results are within specification. Any OOS result must be
+          accompanied by a closed OOS investigation report before the batch
+          can be reviewed for release.
+    4.4.3 Confirm that the analytical methods used are current, approved versions.
+          Results generated using superseded analytical methods require QA review.
+    4.4.4 Verify that all instruments used for release testing were calibrated
+          and within their calibration period at the time of testing (cross-
+          reference with calibration records per SOP-003).
+
+4.5 Yield Reconciliation
+    4.5.1 Calculate theoretical yield, actual yield, and percentage yield.
+          Confirm the actual yield is within the approved yield range defined
+          in the product's manufacturing process description.
+    4.5.2 Investigate yield outside the approved range before batch disposition.
+          Unexplained low yield may indicate diversion, process failure, or
+          weighing errors. Escalate unexplained low yield to QA immediately.
+    4.5.3 Record reconciled quantities for all critical starting materials,
+          packaging components, and printed labels. Unaccounted label
+          discrepancies must be investigated and resolved before release.
+
+4.6 Batch Record Approval
+    4.6.1 Upon completion of the review, the QA Reviewer signs and dates the
+          Batch Record Review Checklist, noting any issues found and their
+          resolution status.
+    4.6.2 If the batch record is approved: forward to the QP for certification.
+    4.6.3 If the batch record is rejected: document deficiencies, return to
+          Production or QC for correction, and re-review the corrected record.
+    4.6.4 Under no circumstances may a QA Reviewer approve a batch record
+          that they personally completed entries in during manufacturing.
+
+================================================================================
+SECTION 5: DEVIATION CRITERIA AND ESCALATION TRIGGERS
+================================================================================
+5.1 The following events constitute a deviation and must be documented within
+    24 hours of discovery:
+
+    (a) Blank fields in a submitted BMR not marked "N/A."
+    (b) Missing second-person verification signature for a critical step.
+    (c) Date/time inconsistency in process records.
+    (d) Correction using correction fluid, overwriting, or erasure.
+    (e) Deviation referenced in BMR without a corresponding open deviation report.
+    (f) Batch record approved by the QA Reviewer who also made BMR entries.
+    (g) QP batch certification issued before batch record review was completed.
+    (h) Analytical result in the batch record not matching the LIMS record.
+
+5.2 Immediate Escalation to QA Manager / QP is required for:
+
+    (a) Evidence of falsification or backdating of any batch record entry.
+    (b) Batch released to market with an unresolved HIGH-risk deviation.
+    (c) Missing entries for a critical manufacturing step (sterilization,
+        aseptic fill, lyophilization) with no corroborating documentation.
+    (d) Yield reconciliation showing unaccounted material exceeding 1% of
+        batch size for a controlled substance or high-potency API.
+    (e) Discovery that a batch was certified by the QP based on an
+        incomplete or materially incorrect batch record.
+    (f) Discrepancy between the batch record and the corresponding electronic
+        manufacturing execution system (MES) data.
+    (g) Post-release discovery of a batch record error that may affect
+        product safety, efficacy, or regulatory compliance.
+
+5.3 Risk Classification Guide:
+    HIGH:   Evidence of falsification or data integrity breach; batch released
+            with unresolved critical deviation; missing critical step records;
+            post-release discovery of material record error.
+    MEDIUM: Unresolved deviation at time of review (batch on hold); multiple
+            correction errors in BMR; yield outside range under investigation;
+            OOS result with open investigation.
+    LOW:    Minor omission (e.g., missing "N/A" in non-critical field) corrected
+            during review; single correction error with adequate documentation.
+
+================================================================================
+SECTION 6: DOCUMENTATION REQUIREMENTS
+================================================================================
+6.1 Batch Manufacturing Record (BMR) — completed at time of each operation.
+6.2 Batch Record Review Checklist — completed by QA Reviewer for every batch.
+6.3 Certificate of Analysis (CoA) — attached or referenced in batch record.
+6.4 Deviation Reports — all referenced deviations filed and status confirmed.
+6.5 OOS Investigation Reports — closed or in-progress status confirmed.
+6.6 Yield Reconciliation Worksheet — attached to BMR before QA review.
+6.7 QP Batch Certification Record — final authorization before release.
+6.8 Batch Disposition Record — filed after release or rejection decision.
+================================================================================
+END OF SOP-005
+================================================================================

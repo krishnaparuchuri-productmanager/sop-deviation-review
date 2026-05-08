@@ -1,0 +1,202 @@
+[
+  {
+    "id": "CASE-001",
+    "scenario": "During routine QC testing, an analyst discovered that the pH meter used for buffer preparation had an expired calibration sticker. The calibration was due on 2026-04-15 and the current date is 2026-05-07. The meter was last used 3 days ago to prepare buffers for two HPLC runs used in a finished product potency assay. The batch has not yet been released.",
+    "area": "Equipment Calibration",
+    "type": "Overdue Calibration",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-002",
+    "scenario": "A sample label was found to have the wrong batch number printed on it. The sample had already been submitted to the QC lab and an identification test was performed. The results were recorded in LIMS against the incorrect batch number. The error was noticed by the analyst during a routine review before the results were formally approved or used in any release decision.",
+    "area": "Sample Management",
+    "type": "Mislabeled Sample",
+    "severity": "Medium",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-003",
+    "scenario": "A scheduled environmental monitoring event for a Grade C cleanroom was missed on 2026-05-05 because the microbiologist was absent and no backup was arranged. The next scheduled monitoring is in 2 days. There are no current manufacturing operations in the affected room.",
+    "area": "Environmental Monitoring",
+    "type": "Missed Monitoring Event",
+    "severity": "Medium",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-004",
+    "scenario": "An API raw material (Compound X, Lot RM-2045) was issued to the manufacturing floor and blending began before the in-house identity test was completed. The supplier certificate of analysis was reviewed and passed, but the QC lab had not yet finished the IR identity confirmation. Blending was stopped when the QC supervisor noticed the LIMS status was still QUARANTINE. No further manufacturing has occurred.",
+    "area": "Raw Material Testing",
+    "type": "Use of Untested Material",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-005",
+    "scenario": "During batch record review for Batch B-4421, the QA reviewer found that the second-person verification signature was missing for the granulation endpoint step. The production operator confirmed verbally that a second person was present but they forgot to sign. The step was performed 6 days ago. No other deviations were found in the batch record.",
+    "area": "Batch Record Review",
+    "type": "Missing Verification Signature",
+    "severity": "Medium",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-006",
+    "scenario": "An active air sampling result for a Grade A filling zone returned 3 CFU/m3 during an aseptic filling campaign for a sterile injectable product. The Action Limit for Grade A is 1 CFU. The filling operation was immediately halted. This is the first exceedance at this location in 12 months.",
+    "area": "Environmental Monitoring",
+    "type": "Action Limit Exceedance",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-007",
+    "scenario": "A refrigerator storing stability samples was found to have recorded a temperature of 9°C for a 45-minute window overnight, as shown on the continuous temperature logger. The specified storage range is 2-8°C. The excursion occurred between 02:15 and 03:00 and then returned to 4°C. The samples stored are non-sterile solid oral dosage forms.",
+    "area": "Sample Management",
+    "type": "Temperature Excursion",
+    "severity": "Medium",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-008",
+    "scenario": "A balance used for weighing excipients was calibrated on 2026-04-01. The calibration certificate is valid for 6 months. The analyst performed a daily check this morning and found the reading for the 100g reference weight was 99.94g, which is outside the ±0.05g acceptance criterion for the daily check. The analyst stopped using the balance and reported the issue.",
+    "area": "Equipment Calibration",
+    "type": "Point-of-Use Verification Failure",
+    "severity": "Medium",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-009",
+    "scenario": "A production operator used correction fluid (Tipp-Ex) to correct an error in the batch manufacturing record for Batch P-0992. The original entry was the blending time recorded as 25 minutes instead of 35 minutes. The correction was noticed during a self-inspection. The batch has been released and distributed.",
+    "area": "Batch Record Review",
+    "type": "Prohibited Correction Method",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-010",
+    "scenario": "During goods receipt of a consignment of microcrystalline cellulose (Lot E-3311), one of the 25 fiber drums was found to have a damaged lid with a small crack approximately 3cm long. The other 24 drums were intact. The damaged drum was set aside and not sampled. QC was notified and the intact drums were placed in quarantine as normal.",
+    "area": "Raw Material Testing",
+    "type": "Damaged Container at Receipt",
+    "severity": "Low",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-011",
+    "scenario": "The QA reviewer found that a batch record for Batch L-0071 was approved and sent to the QP for certification, but the batch record review checklist had not been completed. The QP had already certified the batch and it was shipped to the distribution center. There is no record of the formal review step having been performed.",
+    "area": "Batch Record Review",
+    "type": "Review Step Bypassed",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-012",
+    "scenario": "An analyst completed a sample log entry 3.5 hours after sample collection instead of within the required 30-minute window. The delay occurred because the analyst was performing an urgent retest and forgot. The sample is a routine in-process check sample for a non-sterile oral liquid. Sample integrity was not affected.",
+    "area": "Sample Management",
+    "type": "Late Log Entry",
+    "severity": "Low",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-013",
+    "scenario": "During environmental monitoring of a Grade B background area, a contact plate taken from the filling machine housing returned 28 CFU, exceeding the Action Limit of 25 CFU. The filling campaign for sterile eye drops was still in progress when the results were received. Production was not immediately halted.",
+    "area": "Environmental Monitoring",
+    "type": "Action Limit Exceedance - Production Not Halted",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-014",
+    "scenario": "A raw material (talc, Lot T-0456) was tested and released two weeks ago. Today the QC manager noticed that the test was conducted against specification version 4.1, but the current approved version is 4.2 which includes an additional asbestos screening test. The material has not been used in manufacturing yet.",
+    "area": "Raw Material Testing",
+    "type": "Testing Against Superseded Specification",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-015",
+    "scenario": "The Calibration Master Schedule shows that a dissolved oxygen meter was due for calibration on 2026-04-20. Today is 2026-05-07. A review of usage logs shows the meter has not been used since 2026-03-15, before the calibration expired. There are no open tests or batches that used this instrument.",
+    "area": "Equipment Calibration",
+    "type": "Overdue Calibration - No Recent Use",
+    "severity": "Low",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-016",
+    "scenario": "A chain of custody break was identified for a finished product sample sent to an external contract testing laboratory. The courier did not sign the chain of custody document at the point of handover. The sample arrived at the external lab and the results (sterility test — negative, pass) have already been received and logged against the batch. The batch has not been released.",
+    "area": "Sample Management",
+    "type": "Chain of Custody Break",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-017",
+    "scenario": "The batch record for Batch K-2210 shows that yield reconciliation was not completed. The space for theoretical yield, actual yield, and percentage yield calculation is blank. The batch record was submitted for QA review without this section. The production supervisor confirmed the yield was within range but did not document it.",
+    "area": "Batch Record Review",
+    "type": "Incomplete Yield Reconciliation",
+    "severity": "Medium",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-018",
+    "scenario": "During an internal audit, it was discovered that a settle plate in a Grade C area was exposed for 6 hours instead of the maximum 4 hours specified in the EMP. The analyst was not aware of the maximum exposure time. The plate returned a result of 12 CFU, which is below the Alert Limit of 50 CFU for Grade C. The result has already been entered in the EM Log.",
+    "area": "Environmental Monitoring",
+    "type": "Settle Plate Overexposure",
+    "severity": "Medium",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-019",
+    "scenario": "An HPLC system used for finished product release testing was found to have a calibration label with a next-due date of 2026-05-01. Today is 2026-05-07. The system was used on 2026-05-03 and 2026-05-06 to test two different batches of a tablet product. Both batches are currently pending QP certification.",
+    "area": "Equipment Calibration",
+    "type": "Overdue Calibration - Used for Release Testing",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-020",
+    "scenario": "A new analyst collected a raw material sample using a spatula that had not been designated or cleaned for sampling use. The analyst used a general-purpose spatula from the lab bench instead of the approved sampling tool listed in the sampling plan. The sample was an excipient (lactose monohydrate). The sampling error was identified by the QC supervisor during a routine observation.",
+    "area": "Raw Material Testing",
+    "type": "Unapproved Sampling Equipment",
+    "severity": "Medium",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-021",
+    "scenario": "A QA reviewer noticed that the same person both completed entries in the batch manufacturing record during production and then reviewed and approved the same batch record as the QA Reviewer. This was identified during a self-inspection of Batch M-5503, which has already been certified by the QP and released.",
+    "area": "Batch Record Review",
+    "type": "Reviewer Independence Violation",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-022",
+    "scenario": "An environmental monitoring result for a Grade D corridor showed total aerobic count of 650 CFU/m3, exceeding the Action Limit of 500 CFU/m3. The area serves as a material transfer route only and no direct manufacturing takes place there. Investigation is ongoing into a recent roof leak in the area.",
+    "area": "Environmental Monitoring",
+    "type": "Action Limit Exceedance - Grade D",
+    "severity": "Medium",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-023",
+    "scenario": "The QC lab received a raw material sample submission form that referenced specification version 3.0 for an excipient. On checking, the current approved specification is version 3.1. The change between versions was minor — only the particle size upper limit was adjusted from 300 µm to 250 µm. Testing has not yet begun.",
+    "area": "Raw Material Testing",
+    "type": "Incorrect Specification Version Referenced",
+    "severity": "Low",
+    "expected_action": "Log and Monitor"
+  },
+  {
+    "id": "CASE-024",
+    "scenario": "Batch record review for Batch D-0887 revealed that the in-process dissolution test results recorded in the BMR (82% at 45 minutes) do not match the values in LIMS (79% at 45 minutes). The specification limit is ≥ 80% at 45 minutes. The LIMS value of 79% would be a failing result. The batch has not been released.",
+    "area": "Batch Record Review",
+    "type": "BMR vs LIMS Data Discrepancy",
+    "severity": "High",
+    "expected_action": "Escalate to QA"
+  },
+  {
+    "id": "CASE-025",
+    "scenario": "A microbiologist performing active air sampling in a Grade A laminar flow hood noticed the volumetric air sampler displayed a low battery warning mid-sample. The sampler completed the sample cycle and the volume indicator showed 980 litres rather than the specified 1000 litres. The result was 0 CFU. The analyst is unsure whether to accept or invalidate the sample.",
+    "area": "Environmental Monitoring",
+    "type": "Sampling Equipment Malfunction During Use",
+    "severity": "Medium",
+    "expected_action": "Log and Monitor"
+  }
+]
