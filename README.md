@@ -4,6 +4,22 @@ An AI-powered GMP deviation review assistant for pharmaceutical quality assuranc
 
 ---
 
+## Screenshots
+
+| Chat | Results |
+|---|---|
+| ![Chat screen](screenshots/1-chat.png) | ![Results screen](screenshots/2-results.png) |
+
+| Dashboard | Evals |
+|---|---|
+| ![Dashboard screen](screenshots/3-dashboard.png) | ![Evals screen](screenshots/4-evals.png) |
+
+**Feedback Queue**
+
+![Feedback screen](screenshots/5-feedback.png)
+
+---
+
 ## Table of Contents
 
 1. [What It Is and Why It Was Built](#what-it-is)
@@ -253,6 +269,21 @@ Click **Review Deviation** and wait 5–10 seconds for the structured assessment
 | `/dashboard` | Dashboard | Aggregate analytics (reviews, escalation rate, cost) |
 | `/evals` | Evals | Run the eval suite and view dimension scores |
 | `/feedback` | Feedback Queue | Browse reviewer corrections |
+
+#### Chat — Submit a deviation
+![Chat](screenshots/1-chat.png)
+
+#### Results — Structured assessment
+![Results](screenshots/2-results.png)
+
+#### Dashboard — Analytics
+![Dashboard](screenshots/3-dashboard.png)
+
+#### Evals — Evaluation suite
+![Evals](screenshots/4-evals.png)
+
+#### Feedback Queue
+![Feedback](screenshots/5-feedback.png)
 
 ---
 
