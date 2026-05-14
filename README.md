@@ -4,19 +4,48 @@ An AI-powered GMP deviation review assistant for pharmaceutical quality assuranc
 
 ---
 
-## Screenshots
+## 🎥 Demo
 
-| Chat | Results |
-|---|---|
-| ![Chat screen](screenshots/1-chat.png) | ![Results screen](screenshots/2-results.png) |
+> **60-second walkthrough** — all 5 screens, annotated
 
-| Dashboard | Evals |
-|---|---|
-| ![Dashboard screen](screenshots/3-dashboard.png) | ![Evals screen](screenshots/4-evals.png) |
+https://github.com/krishnaparuchuri-productmanager/sop-deviation-review/raw/main/docs/demo/app-demo.mp4
 
-**Feedback Queue**
+> ⬆️ Click to download and play, or clone the repo and open `docs/demo/app-demo.mp4` directly.
 
-![Feedback screen](screenshots/5-feedback.png)
+---
+
+## 📸 Screenshots
+
+### Submit a Deviation
+<img src="docs/demo/01-chat.png" width="700" alt="Chat — submit a deviation scenario"/>
+
+*Paste any free-text deviation. The agent retrieves relevant SOP sections and returns a structured assessment in under 10 seconds.*
+
+### Structured Assessment
+<img src="docs/demo/02-results.png" width="700" alt="Results — 7-field structured assessment"/>
+
+*Every review returns: Classification · Severity · Impact · Immediate Action · QA Escalation flag · Root Cause Category · Draft CAPA Summary.*
+
+### Analytics Dashboard
+<img src="docs/demo/03-dashboard.png" width="700" alt="Dashboard — aggregate analytics"/>
+
+*Track total reviews, escalation rate, average latency, token cost, and severity distribution across all submitted cases.*
+
+### Evaluation Suite
+<img src="docs/demo/04-evals.png" width="700" alt="Evals — LLM-as-judge scoring"/>
+
+*Run the 15-case golden eval set. LLM-as-judge scores 4 dimensions (0–2 each). Agent achieves **87% pass rate** vs **13% always-escalate baseline**.*
+
+### Feedback Queue
+<img src="docs/demo/05-feedback.png" width="700" alt="Feedback queue — reviewer corrections"/>
+
+*Human reviewers submit thumbs-up / thumbs-down with correction notes. Downvotes surface automatically for QA follow-up.*
+
+**Key features demonstrated:**
+- Real-time deviation review with synthetic demo data (25 cases pre-loaded)
+- LLM-powered structured output via forced tool-use — no free-form parsing
+- Complete reviewer feedback loop with correction tracking
+- Production-ready error handling, loading states, and empty states on every screen
 
 ---
 
@@ -32,6 +61,8 @@ An AI-powered GMP deviation review assistant for pharmaceutical quality assuranc
 8. [Running the Demo Script](#demo-script)
 9. [Testing](#testing)
 10. [Folder Structure](#folder-structure)
+
+> **Just want to see it?** Jump to [🎥 Demo](#-demo) or [📸 Screenshots](#-screenshots) above.
 
 ---
 
