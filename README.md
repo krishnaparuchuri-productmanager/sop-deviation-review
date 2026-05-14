@@ -68,11 +68,24 @@ Every submitted deviation is logged to SQLite with full trace data. The dashboar
 
 ---
 
-#### Step 5 — Reviewer corrections close the feedback loop
+#### Step 5 — Model quality measured with the Evaluation Suite
 
-<img src="docs/demo/05-feedback-queue.png" width="700" alt="Feedback queue showing reviewer corrections"/>
+<img src="docs/demo/05-evals-suite.png" width="700" alt="Eval suite: 87% pass rate vs 13% always-escalate baseline"/>
 
-After viewing the review decision, analysts submit a thumbs-up or thumbs-down rating. Downvoted cases surface here with the reviewer's correction note (e.g., "Expected Log and Monitor, got Escalate"). Across the 25 demo cases: 29 ratings, 52% thumbs-up, 48% thumbs-down — providing a labelled dataset for monitoring model accuracy over time.
+The eval suite runs 15 pre-labelled golden cases through the full pipeline and scores each response using a second Claude Haiku call acting as judge. Four dimensions scored 0–2 each (Groundedness, Classification, Escalation, Clarity) for a maximum of 8 points. Pass threshold: ≥ 6/8.
+
+- **Agent pipeline**: 87% pass rate (13/15 cases), avg score 6.67/8
+- **Always-escalate baseline**: 13% pass rate (2/15 cases), avg score 2.73/8
+
+This shows the LLM-backed workflow substantially outperforms a naive rule-based fallback on every dimension except Escalation (where the baseline trivially scores well by always escalating).
+
+---
+
+#### Step 6 — Reviewer corrections close the feedback loop
+
+<img src="docs/demo/06-feedback-queue.png" width="700" alt="Feedback queue showing reviewer corrections"/>
+
+After viewing the review decision, analysts submit a thumbs-up or thumbs-down rating. Downvoted cases surface here with the reviewer's correction note (e.g., "Expected Log and Monitor, got Escalate"). Across the 25 demo cases: 29 ratings, 52% thumbs-up, 48% thumbs-down — providing a labelled correction dataset for monitoring model accuracy over time.
 
 ---
 

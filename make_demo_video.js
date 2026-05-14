@@ -53,21 +53,28 @@ const SLIDES = [
   // ── Step 4: Dashboard tracks all reviews ─────────────────────────────────
   {
     img:   path.join(DEMO, '04-dashboard.png'),
-    dur:   8,
+    dur:   7,
     line1: 'Step 4: All reviews tracked in the analytics dashboard',
     line2: 'Escalation rate · Average latency · Token cost · Severity breakdown',
   },
-  // ── Step 5: Feedback loop ────────────────────────────────────────────────
+  // ── Step 5: Eval suite ────────────────────────────────────────────────────
   {
-    img:   path.join(DEMO, '05-feedback-queue.png'),
-    dur:   6,
-    line1: 'Step 5: Reviewer corrections close the feedback loop',
+    img:   path.join(DEMO, '05-evals-suite.png'),
+    dur:   8,
+    line1: 'Step 5: Model quality measured with the Evaluation Suite',
+    line2: 'LLM-as-judge · 87% pass rate vs 13% baseline · 4 rubric dimensions scored 0-2',
+  },
+  // ── Step 6: Feedback loop ─────────────────────────────────────────────────
+  {
+    img:   path.join(DEMO, '06-feedback-queue.png'),
+    dur:   5,
+    line1: 'Step 6: Reviewer corrections close the feedback loop',
     line2: 'Downvoted decisions surface for human review -- improving the model over time',
   },
   // ── Outro ────────────────────────────────────────────────────────────────
   {
     img:   path.join(DEMO, '02-review-decision.png'),
-    dur:   6,
+    dur:   5,
     line1: 'Built with Claude Code  ·  FastAPI  ·  React 18  ·  SQLite',
     line2: 'github.com/krishnaparuchuri-productmanager/sop-deviation-review',
   },
