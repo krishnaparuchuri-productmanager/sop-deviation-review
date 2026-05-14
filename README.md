@@ -6,7 +6,7 @@ An AI-powered GMP deviation review assistant for pharmaceutical quality assuranc
 
 ## 🎥 Demo
 
-> **60-second walkthrough** — all 5 screens, annotated
+> **60-second walkthrough** — all 4 screens, annotated
 
 https://github.com/krishnaparuchuri-productmanager/sop-deviation-review/raw/main/docs/demo/app-demo.mp4
 
@@ -16,36 +16,31 @@ https://github.com/krishnaparuchuri-productmanager/sop-deviation-review/raw/main
 
 ## 📸 Screenshots
 
-### Submit a Deviation
+### 1 — Submit a Deviation
 <img src="docs/demo/01-chat.png" width="700" alt="Chat — submit a deviation scenario"/>
 
-*Paste any free-text deviation. The agent retrieves relevant SOP sections and returns a structured assessment in under 10 seconds.*
+*Paste any free-text deviation scenario. The agent retrieves the relevant SOP sections and returns a structured 7-field assessment in under 10 seconds.*
 
-### Structured Assessment
-<img src="docs/demo/02-results.png" width="700" alt="Results — 7-field structured assessment"/>
-
-*Every review returns: Classification · Severity · Impact · Immediate Action · QA Escalation flag · Root Cause Category · Draft CAPA Summary.*
-
-### Analytics Dashboard
-<img src="docs/demo/03-dashboard.png" width="700" alt="Dashboard — aggregate analytics"/>
+### 2 — Analytics Dashboard
+<img src="docs/demo/02-dashboard.png" width="700" alt="Dashboard — aggregate analytics"/>
 
 *Track total reviews, escalation rate, average latency, token cost, and severity distribution across all submitted cases.*
 
-### Evaluation Suite
-<img src="docs/demo/04-evals.png" width="700" alt="Evals — LLM-as-judge scoring"/>
+### 3 — Evaluation Suite
+<img src="docs/demo/03-evals.png" width="700" alt="Evals — LLM-as-judge scoring"/>
 
 *Run the 15-case golden eval set. LLM-as-judge scores 4 dimensions (0–2 each). Agent achieves **87% pass rate** vs **13% always-escalate baseline**.*
 
-### Feedback Queue
-<img src="docs/demo/05-feedback.png" width="700" alt="Feedback queue — reviewer corrections"/>
+### 4 — Feedback Queue
+<img src="docs/demo/04-feedback.png" width="700" alt="Feedback queue — reviewer corrections"/>
 
-*Human reviewers submit thumbs-up / thumbs-down with correction notes. Downvotes surface automatically for QA follow-up.*
+*29 ratings captured: 52% thumbs-up, 48% thumbs-down. Downvoted cases surface with reviewer correction notes for targeted model improvement.*
 
 **Key features demonstrated:**
-- Real-time deviation review with synthetic demo data (25 cases pre-loaded)
-- LLM-powered structured output via forced tool-use — no free-form parsing
+- Real-time deviation review with 25 synthetic cases pre-loaded
+- LLM-powered structured output via forced tool-use — no free-form JSON parsing
+- LLM-as-judge evaluation with 87% pass rate vs 13% always-escalate baseline
 - Complete reviewer feedback loop with correction tracking
-- Production-ready error handling, loading states, and empty states on every screen
 
 ---
 
@@ -301,20 +296,7 @@ Click **Review Deviation** and wait 5–10 seconds for the structured assessment
 | `/evals` | Evals | Run the eval suite and view dimension scores |
 | `/feedback` | Feedback Queue | Browse reviewer corrections |
 
-#### Chat — Submit a deviation
-![Chat](screenshots/1-chat.png)
-
-#### Results — Structured assessment
-![Results](screenshots/2-results.png)
-
-#### Dashboard — Analytics
-![Dashboard](screenshots/3-dashboard.png)
-
-#### Evals — Evaluation suite
-![Evals](screenshots/4-evals.png)
-
-#### Feedback Queue
-![Feedback](screenshots/5-feedback.png)
+> See the [📸 Screenshots](#-screenshots) section at the top for annotated visuals of each screen.
 
 ---
 
