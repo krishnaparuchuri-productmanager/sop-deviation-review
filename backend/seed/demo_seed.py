@@ -332,7 +332,7 @@ def seed_demo_data() -> None:
                 conn.execute(
                     """
                     INSERT INTO traces
-                        (trace_id, timestamp, user_input, retrieved_chunks,
+                        (id, timestamp, user_input, retrieved_chunks,
                          prompt_version, model_output, latency_ms,
                          input_tokens, output_tokens, error)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -355,7 +355,7 @@ def seed_demo_data() -> None:
                 conn.execute(
                     """
                     INSERT INTO feedback
-                        (feedback_id, trace_id, rating, comment,
+                        (id, trace_id, rating, comment,
                          reviewer_correction, created_at)
                     VALUES (?, ?, ?, ?, ?, ?)
                     """,
