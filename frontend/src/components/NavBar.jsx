@@ -23,7 +23,7 @@ export default function NavBar() {
               Rx
             </span>
             <span className="text-white font-semibold text-sm sm:text-base leading-tight truncate">
-              SOP Deviation Review Assistant
+              Pharma Compliance AI Assistant
             </span>
           </div>
 
