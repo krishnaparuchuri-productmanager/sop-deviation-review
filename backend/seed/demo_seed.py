@@ -316,56 +316,64 @@ def seed_demo_data() -> None:
     """
     conn = sqlite3.connect(_DB_PATH)
     try:
-        count = conn.execute("SELECT COUNT(*) FROM traces").fetchone()[0]
-        if count > 0:
-            return  # Already seeded or has real data — do nothing
+        trace_count = conn.execute("SELECT COUNT(*) FROM traces").fetchone()[0]
+        eval_count  = conn.execute("SELECT COUNT(*) FROM eval_results").fetchone()[0]
+
+        # Seed traces + feedback only if traces table is empty
+        if trace_count > 0 and eval_count > 0:
+            return  # Everything already seeded — do nothing
 
         trace_ids: list[str] = []
 
-        for t in _DEMO_TRACES:
-            tid = str(uuid.uuid4())
-            trace_ids.append(tid)
-            conn.execute(
-                """
-                INSERT INTO traces
-                    (trace_id, timestamp, user_input, retrieved_chunks,
-                     prompt_version, model_output, latency_ms,
-                     input_tokens, output_tokens, error)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    tid,
-                    t["timestamp"],
-                    t["user_input"],
-                    json.dumps([]),   # no chunk IDs for demo
-                    "v1",
-                    t["model_output"],
-                    t["latency_ms"],
-                    t["input_tokens"],
-                    t["output_tokens"],
-                    None,
-                ),
-            )
+        if trace_count == 0:
+            for t in _DEMO_TRACES:
+                tid = str(uuid.uuid4())
+                trace_ids.append(tid)
+                conn.execute(
+                    """
+                    INSERT INTO traces
+                        (trace_id, timestamp, user_input, retrieved_chunks,
+                         prompt_version, model_output, latency_ms,
+                         input_tokens, output_tokens, error)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        tid,
+                        t["timestamp"],
+                        t["user_input"],
+                        json.dumps([]),
+                        "v1",
+                        t["model_output"],
+                        t["latency_ms"],
+                        t["input_tokens"],
+                        t["output_tokens"],
+                        None,
+                    ),
+                )
 
-        for fb, idx in zip(_DEMO_FEEDBACK, _FEEDBACK_TRACE_INDICES):
-            conn.execute(
-                """
-                INSERT INTO feedback
-                    (feedback_id, trace_id, rating, comment,
-                     reviewer_correction, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    str(uuid.uuid4()),
-                    trace_ids[idx],
-                    fb["rating"],
-                    fb.get("comment"),
-                    fb.get("reviewer_correction"),
-                    _ts(0),
-                ),
-            )
+            for fb, idx in zip(_DEMO_FEEDBACK, _FEEDBACK_TRACE_INDICES):
+                conn.execute(
+                    """
+                    INSERT INTO feedback
+                        (feedback_id, trace_id, rating, comment,
+                         reviewer_correction, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        str(uuid.uuid4()),
+                        trace_ids[idx],
+                        fb["rating"],
+                        fb.get("comment"),
+                        fb.get("reviewer_correction"),
+                        _ts(0),
+                    ),
+                )
 
-        # Seed eval results
+        # Seed eval results only if missing
+        if eval_count > 0:
+            conn.commit()
+            return
+
         for case_id, g, c, e, cl, p in _EVAL_CASES:
             conn.execute(
                 """
