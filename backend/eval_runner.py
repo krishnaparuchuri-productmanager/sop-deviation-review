@@ -50,7 +50,12 @@ except ImportError:
 # ---------------------------------------------------------------------------
 _BACKEND_DIR = Path(__file__).resolve().parent
 _DB_PATH     = _BACKEND_DIR / "db" / "sop_assistant.db"
-_EVAL_CSV    = _BACKEND_DIR.parent / "data" / "eval_set.csv"
+# Data is bundled inside backend/data/ for Docker; fall back to project root locally.
+_EVAL_CSV    = (
+    _BACKEND_DIR / "data" / "eval_set.csv"
+    if (_BACKEND_DIR / "data" / "eval_set.csv").exists()
+    else _BACKEND_DIR.parent / "data" / "eval_set.csv"
+)
 
 # Pass threshold: total across all four 0–2 dimensions must reach this value.
 PASS_THRESHOLD = 6   # out of 8 maximum

@@ -29,7 +29,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 _THIS_FILE = Path(__file__).resolve()
 _BACKEND_DIR = _THIS_FILE.parent          # .../backend/
 _PROJECT_ROOT = _BACKEND_DIR.parent       # .../sop-deviation-review/
-_SOP_DIR = _PROJECT_ROOT / "data" / "sop"
+# Data is bundled inside backend/data/ so it's available in the Docker image.
+# Fall back to project-root data/ when running locally without the copy.
+_SOP_DIR = (
+    _BACKEND_DIR / "data" / "sop"
+    if (_BACKEND_DIR / "data" / "sop").exists()
+    else _PROJECT_ROOT / "data" / "sop"
+)
 
 
 # ---------------------------------------------------------------------------
