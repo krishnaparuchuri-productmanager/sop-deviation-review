@@ -17,7 +17,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 try:
@@ -25,11 +25,13 @@ try:
     from retrieval import search_sop
     from prompts import assess_deviation_traced, SAFE_FALLBACK
     from tracer import log_trace
+    from rate_limit import is_rate_limited
 except ImportError:
     # Running tests / import from project root
     from backend.retrieval import search_sop
     from backend.prompts import assess_deviation_traced, SAFE_FALLBACK
     from backend.tracer import log_trace
+    from backend.rate_limit import is_rate_limited
 
 router = APIRouter()
 
@@ -47,6 +49,7 @@ class ReviewRequest(BaseModel):
     user_input: str = Field(
         ...,
         min_length=10,
+        max_length=4000,
         description="Free-text description of the deviation to be reviewed.",
         examples=["A cold storage unit was found reading +8°C against a limit of +5°C."],
     )
@@ -138,19 +141,29 @@ def _chunk_ids_json(chunks: list[dict]) -> str:
     ),
     responses={
         200: {"description": "Structured deviation assessment"},
-        422: {"description": "Validation error — user_input too short or malformed"},
+        422: {"description": "Validation error — user_input too short/long or malformed"},
+        429: {"description": "Rate limit exceeded — max 10 requests per minute per IP"},
         500: {"description": "Internal server error"},
     },
 )
-def review_deviation(body: ReviewRequest) -> ReviewResponse:
+def review_deviation(request: Request, body: ReviewRequest) -> ReviewResponse:
     """
     End-to-end deviation review pipeline:
-      1. Generate a trace_id for this request.
-      2. Retrieve top-3 SOP chunks most relevant to the deviation.
-      3. Call assess_deviation_traced() — Haiku call + validation + retry.
-      4. Write a trace record to SQLite (best-effort; never fails the request).
-      5. Return ReviewResponse.
+      1. Rate-limit check — 10 requests/minute per IP.
+      2. Generate a trace_id for this request.
+      3. Retrieve top-3 SOP chunks most relevant to the deviation.
+      4. Call assess_deviation_traced() — Haiku call + validation + retry.
+      5. Write a trace record to SQLite (best-effort; never fails the request).
+      6. Return ReviewResponse.
     """
+    # 0. Rate-limit gate -------------------------------------------------------
+    client_ip = request.client.host if request.client else "unknown"
+    if is_rate_limited(client_ip):
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests. Please wait a moment before trying again.",
+        )
+
     t0        = time.monotonic()
     trace_id  = str(uuid.uuid4())
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")

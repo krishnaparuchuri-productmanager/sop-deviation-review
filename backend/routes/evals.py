@@ -16,12 +16,16 @@ GET /api/evals/results
 
 from __future__ import annotations
 
+import logging
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel, Field
+
+logger = logging.getLogger(__name__)
 
 try:
     from eval_runner import run_full_eval, compute_summary   # uvicorn from backend/
@@ -89,17 +93,27 @@ class EvalRunResponse(BaseModel):
     ),
     responses={
         200: {"description": "Eval run completed successfully"},
+        403: {"description": "Forbidden — invalid or missing X-Eval-Token header"},
         500: {"description": "Pipeline or database error during the run"},
     },
 )
-def trigger_eval_run() -> EvalRunResponse:
+def trigger_eval_run(
+    x_eval_token: str | None = Header(default=None, description="Secret token required to trigger eval runs"),
+) -> EvalRunResponse:
     """Run evals synchronously and return aggregate metrics."""
+    # Guard: require the EVAL_SECRET_TOKEN env var to match the request header.
+    # Without this, any internet user could trigger 30+ LLM calls and drain credits.
+    expected_token = os.environ.get("EVAL_SECRET_TOKEN", "").strip()
+    if not expected_token or x_eval_token != expected_token:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
     try:
         summary = run_full_eval(verbose=True)
     except Exception as exc:                        # noqa: BLE001
+        logger.error("Eval run failed: %s: %s", type(exc).__name__, exc)
         raise HTTPException(
             status_code=500,
-            detail=f"Eval run failed: {type(exc).__name__}: {exc}",
+            detail="Eval run failed due to an internal error. Check server logs.",
         ) from exc
 
     return EvalRunResponse(
@@ -152,7 +166,8 @@ def get_eval_results(
     except HTTPException:
         raise
     except sqlite3.Error as exc:
-        raise HTTPException(status_code=500, detail=f"Database error: {exc}") from exc
+        logger.error("Database error in get_eval_results: %s", exc)
+        raise HTTPException(status_code=500, detail="Database error while fetching eval results.") from exc
 
 
 def _fetch_results(

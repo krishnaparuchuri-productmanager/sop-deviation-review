@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { postReview } from '../api/client.js'
 import { friendlyError } from '../utils/errors.js'
@@ -54,9 +54,23 @@ function Spinner() {
 // ---------------------------------------------------------------------------
 export default function ChatPage() {
   const navigate   = useNavigate()
-  const [text, setText]       = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState(null)
+  const [text, setText]             = useState('')
+  const [loading, setLoading]       = useState(false)
+  const [error, setError]           = useState(null)
+  const [coldStart, setColdStart]   = useState(false)   // shows after 5s of loading
+  const coldStartTimer              = useRef(null)
+
+  // Show a "server waking up" hint if the backend takes more than 5 seconds.
+  // Railway free tier cold-starts can take 20–30 s after a period of inactivity.
+  useEffect(() => {
+    if (loading) {
+      coldStartTimer.current = setTimeout(() => setColdStart(true), 5000)
+    } else {
+      clearTimeout(coldStartTimer.current)
+      setColdStart(false)
+    }
+    return () => clearTimeout(coldStartTimer.current)
+  }, [loading])
 
   const charCount  = text.length
   const canSubmit  = charCount >= 20 && !loading
@@ -160,6 +174,21 @@ export default function ChatPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
             </svg>
             <span><strong className="font-semibold">Request failed:</strong> {error}</span>
+          </div>
+        )}
+
+        {/* ── Cold-start notice ───────────────────────────────────────── */}
+        {coldStart && (
+          <div className="mt-3 flex items-start gap-2 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+            <svg className="w-4 h-4 mt-0.5 flex-shrink-0 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            <span>
+              <strong className="font-semibold">Server is waking up…</strong>{' '}
+              The backend runs on a free hosting tier and may take up to 30 seconds
+              after a period of inactivity. Please wait — your request is on its way.
+            </span>
           </div>
         )}
 

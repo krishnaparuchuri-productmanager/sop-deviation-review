@@ -24,8 +24,12 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
+import logging
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -125,9 +129,10 @@ def get_dashboard_metrics() -> DashboardMetrics:
     except HTTPException:
         raise
     except sqlite3.Error as exc:
+        logger.error("Database error while computing dashboard metrics: %s", exc)
         raise HTTPException(
             status_code=500,
-            detail=f"Database error while computing metrics: {exc}",
+            detail="Database error while computing metrics.",
         ) from exc
 
 

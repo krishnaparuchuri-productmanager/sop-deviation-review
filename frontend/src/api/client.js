@@ -8,6 +8,10 @@
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? ''
 
+// Eval token — set VITE_EVAL_TOKEN in your .env.local (never commit this value).
+// The backend checks this against the EVAL_SECRET_TOKEN env var on Railway.
+const EVAL_TOKEN = import.meta.env.VITE_EVAL_TOKEN ?? ''
+
 /**
  * POST /api/review
  *
@@ -75,7 +79,10 @@ export async function getTraces(limit = 20) {
  * }
  */
 export async function runEvals() {
-  const res = await fetch(`${BASE}/api/evals/run`, { method: 'POST' })
+  const res = await fetch(`${BASE}/api/evals/run`, {
+    method: 'POST',
+    headers: { 'X-Eval-Token': EVAL_TOKEN },
+  })
   if (!res.ok) {
     let detail = `HTTP ${res.status}`
     try {

@@ -19,6 +19,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.init_db import init_db
+from seed.demo_seed import seed_demo_data
 
 # Route modules — imported here; implemented progressively in later phases.
 from routes.review    import router as review_router
@@ -36,6 +37,8 @@ async def lifespan(app: FastAPI):
     """Initialize resources on startup; clean up on shutdown."""
     # Ensure all database tables exist before the first request is served.
     init_db()
+    # Seed demo data if the DB is empty (first deploy on Railway).
+    seed_demo_data()
     yield
     # Nothing to tear down in V1.
 
@@ -61,13 +64,13 @@ app = FastAPI(
 #   • Vite default dev server  : http://localhost:5173
 #   • Alternate Vite port      : http://localhost:5174  (used if 5173 is taken)
 #   • Create-React-App default : http://localhost:3000  (fallback)
-#
-# In production, replace these with your actual frontend domain.
+#   • Production frontend      : https://pharmacomplianceai.krishnaparuchuri.com
 # ---------------------------------------------------------------------------
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
+    "https://pharmacomplianceai.krishnaparuchuri.com",
 ]
 
 app.add_middleware(
@@ -75,7 +78,7 @@ app.add_middleware(
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "X-Eval-Token"],
 )
 
 
