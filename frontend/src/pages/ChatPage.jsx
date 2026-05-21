@@ -103,7 +103,7 @@ export default function ChatPage() {
 
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Deviation Review Assistant</h1>
+        <h1 className="text-2xl font-bold text-gray-900">GMP Deviation Review</h1>
         <p className="mt-1 text-sm text-gray-500">
           Paste or type a deviation description. The assistant will retrieve relevant
           SOP sections and return a structured GMP assessment.
