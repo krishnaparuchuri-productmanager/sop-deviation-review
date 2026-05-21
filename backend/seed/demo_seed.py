@@ -250,6 +250,51 @@ _DEMO_TRACES = [
     },
 ]
 
+# ---------------------------------------------------------------------------
+# Demo eval results — 15 actual + 15 baseline rows (one fixed run)
+# Reflects ~87% pass rate for actual, ~53% for baseline
+# ---------------------------------------------------------------------------
+_EVAL_RUN_ID = "demo-eval-run-00000000-0000-0000-0000-000000000001"
+_EVAL_RUN_TS = _ts(2, 8)
+
+_EVAL_CASES = [
+    # case_id, groundedness, classification, escalation, clarity, pass
+    ("EVAL-001", 2, 2, 2, 2, 1),
+    ("EVAL-002", 2, 2, 2, 1, 1),
+    ("EVAL-003", 2, 2, 2, 2, 1),
+    ("EVAL-004", 1, 2, 2, 2, 1),
+    ("EVAL-005", 2, 1, 2, 2, 1),
+    ("EVAL-006", 2, 2, 2, 2, 1),
+    ("EVAL-007", 2, 2, 1, 2, 1),
+    ("EVAL-008", 2, 2, 2, 2, 1),
+    ("EVAL-009", 1, 1, 2, 2, 1),
+    ("EVAL-010", 2, 2, 2, 2, 1),
+    ("EVAL-011", 2, 2, 2, 1, 1),
+    ("EVAL-012", 2, 2, 2, 2, 1),
+    ("EVAL-013", 1, 2, 1, 1, 0),  # fail
+    ("EVAL-014", 2, 2, 2, 2, 1),
+    ("EVAL-015", 1, 1, 2, 1, 0),  # fail
+]
+
+_EVAL_BASELINE_CASES = [
+    # baseline always escalates — scores lower on groundedness + classification
+    ("EVAL-001", 1, 1, 2, 1, 0),
+    ("EVAL-002", 1, 1, 2, 1, 0),
+    ("EVAL-003", 2, 1, 2, 1, 1),
+    ("EVAL-004", 1, 1, 2, 1, 0),
+    ("EVAL-005", 1, 1, 2, 1, 0),
+    ("EVAL-006", 2, 1, 2, 2, 1),
+    ("EVAL-007", 1, 1, 2, 1, 0),
+    ("EVAL-008", 1, 1, 2, 1, 0),
+    ("EVAL-009", 2, 1, 2, 1, 1),
+    ("EVAL-010", 1, 1, 2, 1, 0),
+    ("EVAL-011", 1, 1, 2, 1, 0),
+    ("EVAL-012", 2, 1, 2, 2, 1),
+    ("EVAL-013", 1, 1, 2, 1, 0),
+    ("EVAL-014", 1, 1, 2, 1, 0),
+    ("EVAL-015", 1, 1, 2, 1, 0),
+]
+
 _DEMO_FEEDBACK = [
     # trace index 0 → thumbs up
     {"rating": 1,  "comment": "Accurate assessment, action was correct."},
@@ -320,8 +365,35 @@ def seed_demo_data() -> None:
                 ),
             )
 
+        # Seed eval results
+        for case_id, g, c, e, cl, p in _EVAL_CASES:
+            conn.execute(
+                """
+                INSERT INTO eval_results
+                    (id, case_id, run_id, model_tag,
+                     groundedness, classification, escalation, clarity,
+                     overall_pass, notes, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (str(uuid.uuid4()), case_id, _EVAL_RUN_ID, "actual",
+                 g, c, e, cl, p, "", _EVAL_RUN_TS),
+            )
+        for case_id, g, c, e, cl, p in _EVAL_BASELINE_CASES:
+            conn.execute(
+                """
+                INSERT INTO eval_results
+                    (id, case_id, run_id, model_tag,
+                     groundedness, classification, escalation, clarity,
+                     overall_pass, notes, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (str(uuid.uuid4()), case_id, _EVAL_RUN_ID,
+                 "baseline_always_escalate",
+                 g, c, e, cl, p, "", _EVAL_RUN_TS),
+            )
+
         conn.commit()
-        print(f"[seed] Inserted {len(_DEMO_TRACES)} demo traces and {len(_DEMO_FEEDBACK)} feedback records.")
+        print(f"[seed] Inserted {len(_DEMO_TRACES)} demo traces, {len(_DEMO_FEEDBACK)} feedback records, and {len(_EVAL_CASES) * 2} eval results.")
 
     except Exception as exc:  # noqa: BLE001
         print(f"[seed] Skipped — {exc}")
