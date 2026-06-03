@@ -253,6 +253,68 @@ def push_daily_cost(target_date: date | None = None) -> None:
         )
 
 
+# ── Push individual execution trace ───────────────────────────────────────────
+
+def push_trace(
+    trace_id:    str,
+    timestamp:   str,
+    user_input:  str,
+    assessment:  dict,
+    input_tokens:  int,
+    output_tokens: int,
+    latency_ms:    int,
+    is_fallback:   bool,
+) -> None:
+    """
+    Push a single /api/review execution trace to AgentOps after it completes.
+    This populates the Execution Traces tab in the AgentOps dashboard.
+
+    Args:
+        trace_id:      UUID generated in routes/review.py
+        timestamp:     ISO-8601 UTC string
+        user_input:    raw deviation text (trimmed server-side to 500 chars by AgentOps)
+        assessment:    the parsed LLM assessment dict (classification, severity, etc.)
+        input_tokens:  tokens consumed by the LLM call
+        output_tokens: tokens returned by the LLM call
+        latency_ms:    end-to-end latency of the review pipeline
+        is_fallback:   True if the LLM call used the safe fallback response
+    """
+    ensure_agent_registered()
+    if not AGENTOPS_URL:
+        return
+
+    cost_usd = round(
+        input_tokens * _INPUT_PRICE + output_tokens * _OUTPUT_PRICE, 6
+    )
+
+    payload = {
+        "trace_id":       trace_id,
+        "timestamp":      timestamp,
+        "user_input":     user_input,
+        "severity":       assessment.get("severity"),
+        "qa_escalation":  bool(assessment.get("qa_escalation", False)),
+        "classification": assessment.get("classification"),
+        "input_tokens":   input_tokens,
+        "output_tokens":  output_tokens,
+        "cost_usd":       cost_usd,
+        "latency_ms":     latency_ms,
+        "is_fallback":    is_fallback,
+        "model_output":   None,  # omit full output to keep payload lean
+        "source_app":     "sop-deviation-review",
+    }
+
+    result = _api("POST", f"/agents/{AGENT_ID}/traces", payload)
+    if result:
+        logger.debug(
+            "AgentOps trace pushed: id=%s severity=%s escalate=%s latency=%dms cost=$%.5f",
+            trace_id[:8],
+            assessment.get("severity", "?"),
+            assessment.get("qa_escalation"),
+            latency_ms,
+            cost_usd,
+        )
+
+
 # ── Full sync (manual trigger) ─────────────────────────────────────────────────
 
 def full_sync() -> dict[str, Any]:

@@ -26,14 +26,14 @@ try:
     from prompts import assess_deviation_traced, SAFE_FALLBACK
     from tracer import log_trace
     from rate_limit import is_rate_limited
-    from agentops_push import push_daily_cost
+    from agentops_push import push_daily_cost, push_trace
 except ImportError:
     # Running tests / import from project root
     from backend.retrieval import search_sop
     from backend.prompts import assess_deviation_traced, SAFE_FALLBACK
     from backend.tracer import log_trace
     from backend.rate_limit import is_rate_limited
-    from backend.agentops_push import push_daily_cost
+    from backend.agentops_push import push_daily_cost, push_trace
 
 router = APIRouter()
 
@@ -201,8 +201,18 @@ def review_deviation(request: Request, body: ReviewRequest) -> ReviewResponse:
         "error":            trace_meta.error or retrieval_error,
     })
 
-    # 4. Push today's cost rollup to AgentOps (best-effort, non-blocking) -----
+    # 4. Push to AgentOps (best-effort, non-blocking) --------------------------
     try:
+        push_trace(
+            trace_id      = trace_id,
+            timestamp     = timestamp,
+            user_input    = body.user_input,
+            assessment    = assessment,
+            input_tokens  = trace_meta.input_tokens or 0,
+            output_tokens = trace_meta.output_tokens or 0,
+            latency_ms    = latency_ms,
+            is_fallback   = trace_meta.is_fallback,
+        )
         push_daily_cost()
     except Exception:   # noqa: BLE001
         pass  # Never let AgentOps push break the review response
