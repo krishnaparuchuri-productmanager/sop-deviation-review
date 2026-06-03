@@ -132,16 +132,30 @@ def debug_langsmith() -> dict:
         "LANGCHAIN_PROJECT":  os.environ.get("LANGCHAIN_PROJECT",  "NOT SET"),
         "LANGCHAIN_TRACING_V2": os.environ.get("LANGCHAIN_TRACING_V2", "NOT SET"),
     }
+    import uuid as _uuid
+    from datetime import datetime, timezone
     try:
         from langsmith import Client
         c = Client()
         result["client_api_url"] = c.api_url
-        projects = [p.name for p in c.list_projects()]
-        result["projects_visible"] = projects
-        result["target_project_exists"] = "gmp-deviation-review" in projects
+        # Test write access directly — same call our trace push uses
+        test_run_id = str(_uuid.uuid4())
+        now = datetime.now(timezone.utc)
+        c.create_run(
+            id           = test_run_id,
+            name         = "debug-test-run",
+            run_type     = "chain",
+            project_name = "gmp-deviation-review",
+            inputs       = {"test": True},
+            outputs      = {"result": "debug"},
+            start_time   = now,
+            end_time     = now,
+        )
+        result["create_run"] = f"OK — run_id={test_run_id}"
         result["connection"] = "OK"
     except Exception as exc:
-        result["connection"] = f"FAILED: {exc}"
+        result["create_run"] = f"FAILED: {exc}"
+        result["connection"] = "FAILED"
     return result
 
 
