@@ -120,6 +120,31 @@ def health_check() -> dict:
     return {"status": "ok", "service": "SOP Deviation Review Assistant", "version": "1.0.0"}
 
 
+@app.get("/debug/langsmith", tags=["System"])
+def debug_langsmith() -> dict:
+    """Diagnose LangSmith connectivity. Remove after debugging."""
+    import os
+    result: dict = {
+        "LANGSMITH_API_KEY":  (os.environ.get("LANGSMITH_API_KEY",  "NOT SET")[:12] + "...") if os.environ.get("LANGSMITH_API_KEY")  else "NOT SET",
+        "LANGSMITH_PROJECT":  os.environ.get("LANGSMITH_PROJECT",  "NOT SET"),
+        "LANGSMITH_TRACING":  os.environ.get("LANGSMITH_TRACING",  "NOT SET"),
+        "LANGCHAIN_API_KEY":  (os.environ.get("LANGCHAIN_API_KEY",  "NOT SET")[:12] + "...") if os.environ.get("LANGCHAIN_API_KEY")  else "NOT SET",
+        "LANGCHAIN_PROJECT":  os.environ.get("LANGCHAIN_PROJECT",  "NOT SET"),
+        "LANGCHAIN_TRACING_V2": os.environ.get("LANGCHAIN_TRACING_V2", "NOT SET"),
+    }
+    try:
+        from langsmith import Client
+        c = Client()
+        result["client_api_url"] = c.api_url
+        projects = [p.name for p in c.list_projects()]
+        result["projects_visible"] = projects
+        result["target_project_exists"] = "gmp-deviation-review" in projects
+        result["connection"] = "OK"
+    except Exception as exc:
+        result["connection"] = f"FAILED: {exc}"
+    return result
+
+
 # ---------------------------------------------------------------------------
 # Root — friendly message for browser / curl visits
 # ---------------------------------------------------------------------------
