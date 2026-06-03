@@ -138,23 +138,6 @@ def _chunk_ids_json(chunks: list[dict]) -> str:
 # POST /api/review
 # ---------------------------------------------------------------------------
 
-@router.post(
-    "/review",
-    response_model=ReviewResponse,
-    summary="Review a pharmaceutical deviation",
-    description=(
-        "Accepts a free-text deviation description, retrieves the most relevant "
-        "SOP sections, and returns a structured GMP assessment with a severity "
-        "classification, recommended immediate action, and QA escalation flag. "
-        "Every call is persisted to the traces table."
-    ),
-    responses={
-        200: {"description": "Structured deviation assessment"},
-        422: {"description": "Validation error — user_input too short/long or malformed"},
-        429: {"description": "Rate limit exceeded — max 10 requests per minute per IP"},
-        500: {"description": "Internal server error"},
-    },
-)
 @traceable(
     name="gmp-deviation-review",
     run_type="chain",
@@ -223,6 +206,21 @@ def _run_review_pipeline(user_input: str, case_id: str | None) -> dict:
     }
 
 
+@router.post(
+    "/review",
+    response_model=ReviewResponse,
+    summary="Review a pharmaceutical deviation",
+    description=(
+        "Accepts a free-text deviation description, retrieves the top-3 relevant SOP chunks, "
+        "calls Claude Haiku for structured assessment, and returns a fixed-schema JSON response."
+    ),
+    responses={
+        200: {"description": "Structured deviation assessment"},
+        422: {"description": "Validation error — user_input too short/long or malformed"},
+        429: {"description": "Rate limit exceeded — max 10 requests per minute per IP"},
+        500: {"description": "Internal server error"},
+    },
+)
 def review_deviation(request: Request, body: ReviewRequest) -> ReviewResponse:
     """
     End-to-end deviation review pipeline:
