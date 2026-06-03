@@ -20,12 +20,30 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
+import threading
+
 try:
-    from langsmith import traceable
+    from langsmith import Client as LangSmithClient
+    _ls_client: LangSmithClient | None = None
+
+    def _get_ls_client() -> LangSmithClient | None:
+        """Return a cached LangSmith client, or None if unavailable."""
+        global _ls_client
+        if _ls_client is None:
+            try:
+                _ls_client = LangSmithClient()
+            except Exception:
+                pass
+        return _ls_client
+
 except ImportError:
-    def traceable(**_kw):           # no-op decorator if langsmith not installed
-        def _wrap(fn): return fn
-        return _wrap
+    LangSmithClient = None  # type: ignore
+    def _get_ls_client():
+        return None
+
+def traceable(**_kw):           # no-op decorator — tracing done manually below
+    def _wrap(fn): return fn
+    return _wrap
 
 try:
     # Running via uvicorn from inside backend/
@@ -138,12 +156,6 @@ def _chunk_ids_json(chunks: list[dict]) -> str:
 # POST /api/review
 # ---------------------------------------------------------------------------
 
-@traceable(
-    name="gmp-deviation-review",
-    run_type="chain",
-    tags=["pharma", "gmp", "deviation"],
-    metadata={"project": "sop-deviation-review", "prompt_version": _PROMPT_VERSION},
-)
 def _run_review_pipeline(user_input: str, case_id: str | None) -> dict:
     """
     Inner traceable pipeline — separated from the FastAPI handler so LangSmith
@@ -196,7 +208,7 @@ def _run_review_pipeline(user_input: str, case_id: str | None) -> dict:
     except Exception:
         pass
 
-    return {
+    result = {
         "assessment":   assessment,
         "trace_meta":   trace_meta,
         "sop_chunks":   sop_chunks,
@@ -204,6 +216,41 @@ def _run_review_pipeline(user_input: str, case_id: str | None) -> dict:
         "case_id":      case_id,
         "latency_ms":   latency_ms,
     }
+
+    # Push trace to LangSmith in a background thread so it never blocks the response.
+    def _push_langsmith():
+        try:
+            client = _get_ls_client()
+            if client is None:
+                return
+            import os
+            project = os.environ.get("LANGSMITH_PROJECT") or os.environ.get("LANGCHAIN_PROJECT") or "default"
+            run_id = str(uuid.uuid4())
+            client.create_run(
+                id          = run_id,
+                name        = "gmp-deviation-review",
+                run_type    = "chain",
+                project_name = project,
+                inputs      = {"user_input": user_input, "case_id": case_id},
+                outputs     = {"assessment": assessment},
+                tags        = ["pharma", "gmp", "deviation"],
+                extra       = {
+                    "metadata": {
+                        "trace_id":      trace_id,
+                        "prompt_version": _PROMPT_VERSION,
+                        "latency_ms":    latency_ms,
+                        "input_tokens":  trace_meta.input_tokens,
+                        "output_tokens": trace_meta.output_tokens,
+                        "is_fallback":   trace_meta.is_fallback,
+                    }
+                },
+            )
+        except Exception:
+            pass  # Never let LangSmith errors surface to the caller
+
+    threading.Thread(target=_push_langsmith, daemon=True).start()
+
+    return result
 
 
 @router.post(
