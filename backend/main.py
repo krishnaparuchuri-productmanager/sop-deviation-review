@@ -132,30 +132,41 @@ def debug_langsmith() -> dict:
         "LANGCHAIN_PROJECT":  os.environ.get("LANGCHAIN_PROJECT",  "NOT SET"),
         "LANGCHAIN_TRACING_V2": os.environ.get("LANGCHAIN_TRACING_V2", "NOT SET"),
     }
-    import uuid as _uuid
+    import uuid as _uuid, urllib.request as _ur, json as _json
     from datetime import datetime, timezone
+    api_key = os.environ.get("LANGSMITH_API_KEY", "")
+
+    # Raw HTTP test — bypasses SDK to isolate account vs SDK issue
     try:
-        from langsmith import Client
-        c = Client()
-        result["client_api_url"] = c.api_url
-        # Test write access directly — same call our trace push uses
-        test_run_id = str(_uuid.uuid4())
-        now = datetime.now(timezone.utc)
-        c.create_run(
-            id           = test_run_id,
-            name         = "debug-test-run",
-            run_type     = "chain",
-            project_name = "gmp-deviation-review",
-            inputs       = {"test": True},
-            outputs      = {"result": "debug"},
-            start_time   = now,
-            end_time     = now,
+        payload = _json.dumps({
+            "id":         str(_uuid.uuid4()),
+            "name":       "debug-test-run",
+            "run_type":   "chain",
+            "inputs":     {"test": True},
+            "outputs":    {"result": "debug"},
+            "session_name": "gmp-deviation-review",
+            "start_time": datetime.now(timezone.utc).isoformat(),
+        }).encode()
+        req = _ur.Request(
+            "https://api.smith.langchain.com/runs",
+            data    = payload,
+            method  = "POST",
+            headers = {"x-api-key": api_key, "Content-Type": "application/json"},
         )
-        result["create_run"] = f"OK — run_id={test_run_id}"
-        result["connection"] = "OK"
+        with _ur.urlopen(req, timeout=10) as r:
+            result["raw_http_post"] = f"OK — status {r.status}"
+            result["connection"] = "OK"
     except Exception as exc:
-        result["create_run"] = f"FAILED: {exc}"
+        result["raw_http_post"] = f"FAILED: {exc}"
         result["connection"] = "FAILED"
+
+    # Also test GET /info (no auth needed) to confirm network is reachable
+    try:
+        with _ur.urlopen("https://api.smith.langchain.com/info", timeout=5) as r:
+            result["api_reachable"] = f"OK — status {r.status}"
+    except Exception as exc:
+        result["api_reachable"] = f"FAILED: {exc}"
+
     return result
 
 
