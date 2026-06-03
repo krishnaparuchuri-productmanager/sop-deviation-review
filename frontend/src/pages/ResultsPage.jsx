@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import RiskBadge from '../components/RiskBadge.jsx'
-import { postFeedback } from '../api/client.js'
+import { postFeedback, getTraces } from '../api/client.js'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Sub-components
@@ -320,7 +320,42 @@ function FeedbackWidget({ traceId }) {
 export default function ResultsPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { result, userInput } = location.state ?? {}
+  const [result,    setResult]    = useState(location.state?.result    ?? null)
+  const [userInput, setUserInput] = useState(location.state?.userInput ?? null)
+  const [loading,   setLoading]   = useState(!location.state?.result)
+
+  // On refresh (no nav state), load the most recent trace from the API
+  useEffect(() => {
+    if (location.state?.result) return   // came from a fresh review — nothing to do
+    getTraces(1)
+      .then(({ traces }) => {
+        if (!traces?.length) return
+        const t = traces[0]
+        // Reconstruct the result shape that the rest of the page expects
+        try {
+          const parsed = JSON.parse(t.model_output ?? '{}')
+          setResult({
+            ...parsed,
+            trace_id:          t.trace_id,
+            latency_ms:        t.latency_ms,
+            input_tokens:      t.input_tokens,
+            output_tokens:     t.output_tokens,
+            retrieved_sources: JSON.parse(t.retrieved_chunks ?? '[]'),
+          })
+          setUserInput(t.user_input)
+        } catch (_) { /* parse error — leave result null */ }
+      })
+      .catch(() => {/* network error — leave result null */})
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-20 text-center text-gray-400 text-sm">
+        Loading last result…
+      </div>
+    )
+  }
 
   // Guard: if navigated to directly without review state, redirect to chat
   if (!result) {

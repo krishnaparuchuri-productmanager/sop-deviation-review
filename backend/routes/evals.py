@@ -29,8 +29,10 @@ logger = logging.getLogger(__name__)
 
 try:
     from eval_runner import run_full_eval, compute_summary   # uvicorn from backend/
+    from agentops_push import push_eval_results
 except ImportError:
     from backend.eval_runner import run_full_eval, compute_summary
+    from backend.agentops_push import push_eval_results
 
 router = APIRouter()
 
@@ -115,6 +117,12 @@ def trigger_eval_run(
             status_code=500,
             detail="Eval run failed due to an internal error. Check server logs.",
         ) from exc
+
+    # Push results to AgentOps governance dashboard (non-blocking — errors are logged, not raised)
+    try:
+        push_eval_results(summary)
+    except Exception as exc:                        # noqa: BLE001
+        logger.warning("AgentOps push_eval_results failed (non-fatal): %s", exc)
 
     return EvalRunResponse(
         run_id     = summary["run_id"],

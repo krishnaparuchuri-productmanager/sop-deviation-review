@@ -27,6 +27,7 @@ from routes.traces    import router as traces_router
 from routes.feedback  import router as feedback_router
 from routes.dashboard import router as dashboard_router
 from routes.evals     import router as evals_router
+from agentops_push    import full_sync, ensure_agent_registered
 
 
 # ---------------------------------------------------------------------------
@@ -91,6 +92,23 @@ app.include_router(traces_router,    prefix="/api", tags=["Traces"])
 app.include_router(feedback_router,  prefix="/api", tags=["Feedback"])
 app.include_router(dashboard_router, prefix="/api", tags=["Dashboard"])
 app.include_router(evals_router,     prefix="/api", tags=["Evals"])
+
+
+# ---------------------------------------------------------------------------
+# AgentOps integration — POST /api/agentops/sync
+# Manually trigger a sync of the last 7 days of cost/token data to AgentOps.
+# Also registers the agent in AgentOps if it doesn't exist yet.
+# ---------------------------------------------------------------------------
+@app.post("/api/agentops/sync", tags=["AgentOps"])
+def sync_to_agentops():
+    """
+    Push the last 7 days of review cost/token data to the AgentOps governance
+    dashboard. Also ensures the agent is registered. Safe to call repeatedly —
+    AgentOps cost records use INSERT OR IGNORE so duplicates are skipped.
+
+    Requires AGENTOPS_API_URL environment variable to be set.
+    """
+    return full_sync()
 
 
 # ---------------------------------------------------------------------------
