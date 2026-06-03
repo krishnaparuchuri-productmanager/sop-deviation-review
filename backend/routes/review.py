@@ -218,35 +218,49 @@ def _run_review_pipeline(user_input: str, case_id: str | None) -> dict:
     }
 
     # Push trace to LangSmith in a background thread so it never blocks the response.
+    _run_end_time = datetime.now(timezone.utc)
+    _run_start_time = _run_end_time.replace(
+        microsecond=max(0, _run_end_time.microsecond - latency_ms * 1000)
+    )
+
     def _push_langsmith():
+        import os, logging
+        _log = logging.getLogger("langsmith_push")
         try:
             client = _get_ls_client()
             if client is None:
+                _log.warning("[langsmith] client is None — check LANGSMITH_API_KEY")
                 return
-            import os
-            project = os.environ.get("LANGSMITH_PROJECT") or os.environ.get("LANGCHAIN_PROJECT") or "default"
+            project = (
+                os.environ.get("LANGSMITH_PROJECT")
+                or os.environ.get("LANGCHAIN_PROJECT")
+                or "default"
+            )
             run_id = str(uuid.uuid4())
             client.create_run(
-                id          = run_id,
-                name        = "gmp-deviation-review",
-                run_type    = "chain",
+                id           = run_id,
+                name         = "gmp-deviation-review",
+                run_type     = "chain",
                 project_name = project,
-                inputs      = {"user_input": user_input, "case_id": case_id},
-                outputs     = {"assessment": assessment},
-                tags        = ["pharma", "gmp", "deviation"],
-                extra       = {
+                inputs       = {"user_input": user_input, "case_id": case_id},
+                outputs      = {"assessment": assessment},
+                start_time   = _run_start_time,
+                end_time     = _run_end_time,
+                tags         = ["pharma", "gmp", "deviation"],
+                extra        = {
                     "metadata": {
-                        "trace_id":      trace_id,
+                        "trace_id":       trace_id,
                         "prompt_version": _PROMPT_VERSION,
-                        "latency_ms":    latency_ms,
-                        "input_tokens":  trace_meta.input_tokens,
-                        "output_tokens": trace_meta.output_tokens,
-                        "is_fallback":   trace_meta.is_fallback,
+                        "latency_ms":     latency_ms,
+                        "input_tokens":   trace_meta.input_tokens,
+                        "output_tokens":  trace_meta.output_tokens,
+                        "is_fallback":    trace_meta.is_fallback,
                     }
                 },
             )
-        except Exception:
-            pass  # Never let LangSmith errors surface to the caller
+            _log.info(f"[langsmith] run pushed: {run_id} → project={project}")
+        except Exception as exc:
+            _log.error(f"[langsmith] push failed: {exc}")
 
     threading.Thread(target=_push_langsmith, daemon=True).start()
 
