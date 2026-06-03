@@ -2,6 +2,9 @@
 
 An AI-powered GMP deviation review assistant for pharmaceutical quality assurance teams. Analysts paste a free-text deviation scenario and receive a structured assessment — classification, severity rating, impact statement, immediate action steps, QA escalation decision, and a draft CAPA summary — in under 10 seconds.
 
+🔗 **Live demo:** [pharmacomplianceai.krishna1parchuri.workers.dev](https://pharmacomplianceai.krishna1parchuri.workers.dev)  
+📊 **Governed by:** [AgentOps dashboard](https://agentops.krishna1parchuri.workers.dev) — lifecycle, evals, cost tracking, LangSmith observability
+
 ---
 
 ## Demo Walkthrough
@@ -275,15 +278,36 @@ Dependencies installed:
 
 ## Environment Variables <a name="environment-variables"></a>
 
+### Local development
+
 Create a `.env` file in the **project root** (next to `backend/` and `frontend/`):
 
 ```env
 ANTHROPIC_API_KEY=sk-ant-api03-...
 ```
 
-The backend loads this automatically via `python-dotenv` at startup. No other environment variables are required for local development.
+The backend loads this automatically via `python-dotenv` at startup. `ANTHROPIC_API_KEY` is the only variable required for local development.
 
-> **Never commit your `.env` file.** The `.gitignore` should already exclude it.
+> **Never commit your `.env` file.** The `.gitignore` excludes it.
+
+### Production (Railway)
+
+The following environment variables are set in the Railway dashboard for the backend service:
+
+| Variable | Description |
+|---|---|
+| `ANTHROPIC_API_KEY` | Anthropic secret key |
+| `LANGSMITH_API_KEY` | LangSmith APAC workspace key (`lsv2_pt_...`) |
+| `LANGSMITH_ENDPOINT` | `https://apac.api.smith.langchain.com` |
+| `LANGSMITH_PROJECT` | `gmp-deviation-review` |
+| `LANGCHAIN_API_KEY` | Same as `LANGSMITH_API_KEY` (SDK compatibility) |
+| `LANGCHAIN_PROJECT` | `gmp-deviation-review` |
+| `LANGCHAIN_TRACING_V2` | `true` |
+| `LANGSMITH_TRACING` | `true` |
+
+> **APAC endpoint required** — this LangSmith workspace is on the Asia-Pacific region. Using the default US endpoint (`api.smith.langchain.com`) causes 403 errors. Always set `LANGSMITH_ENDPOINT` explicitly.
+
+LangSmith traces are pushed in a background thread (non-blocking) after each review response is returned. The request latency is unaffected even if LangSmith is unreachable.
 
 ---
 
@@ -506,16 +530,18 @@ sop-deviation-review/
 │   ├── package.json
 │   ├── vite.config.js            # Port 5173, /api proxy to :8001
 │   ├── tailwind.config.js
+│   ├── wrangler.toml             # Cloudflare Workers deploy config (SPA routing)
 │   └── src/
-│       ├── App.jsx               # Router, layout shell
+│       ├── App.jsx               # Router, login gate, layout shell
 │       ├── api/
 │       │   └── client.js         # fetch wrappers for all endpoints
 │       ├── utils/
 │       │   └── errors.js         # friendlyError() — humanizes network/HTTP errors
 │       ├── components/
-│       │   ├── NavBar.jsx        # Top navigation bar
+│       │   ├── NavBar.jsx        # Top nav — shows username + Sign out when logged in
 │       │   └── RiskBadge.jsx     # Colored severity badge (Low/Medium/High)
 │       └── pages/
+│           ├── LoginPage.jsx     # Demo login screen (4-char min, sessionStorage session)
 │           ├── ChatPage.jsx      # Deviation input form
 │           ├── ResultsPage.jsx   # Full assessment display with SOP sources
 │           ├── DashboardPage.jsx # Analytics cards and charts
@@ -559,6 +585,58 @@ sop-deviation-review/
 | `GET` | `/health` | Health check |
 
 Full interactive docs at: `http://localhost:8001/docs`
+
+---
+
+## Deployment <a name="deployment"></a>
+
+The application is deployed across two platforms:
+
+| Service | Platform | URL |
+|---|---|---|
+| Backend API | Railway | `https://sop-deviation-review-production.up.railway.app` |
+| Frontend SPA | Cloudflare Workers | `https://pharmacomplianceai.krishna1parchuri.workers.dev` |
+
+### Deploy frontend
+
+```bash
+cd frontend
+npm run build
+npx wrangler deploy
+```
+
+The `wrangler.toml` in `frontend/` configures the Worker name and sets `not_found_handling = "single-page-application"` so all routes serve `index.html`.
+
+### Deploy backend
+
+The backend auto-deploys on Railway when commits are pushed to the `main` branch. No manual deploy step needed.
+
+---
+
+## Observability — LangSmith <a name="observability"></a>
+
+Every deviation review pushes a trace to LangSmith automatically after the response is returned (non-blocking background thread — request latency is unaffected).
+
+**Project:** `gmp-deviation-review` in the LangSmith APAC workspace
+
+Each trace contains:
+- Anonymised `user_input` and `assessment`
+- `trace_id`, `prompt_version`, `latency_ms`
+- `input_tokens`, `output_tokens`, `is_fallback`
+
+The trace push uses `LangSmithClient.create_run()` with explicit `start_time` and `end_time` so runs appear immediately in the LangSmith UI (pending runs without `end_time` never surface).
+
+> **Governed by AgentOps:** The `sop-deviation-review` agent lifecycle, eval results, cost records, and alerts are all tracked in the [AgentOps governance dashboard](https://agentops.krishna1parchuri.workers.dev).
+
+---
+
+## Login Screen <a name="login"></a>
+
+The frontend is gated by a login screen. Any username and password of ≥ 4 characters is accepted (demo mode — no real authentication).
+
+- Session is stored in `sessionStorage` — persists across page refreshes within the same browser tab, but a new tab starts fresh
+- The signed-in username is shown in the nav bar with a **Sign out** button
+- Invalid input shows red field errors and a shake animation on the login card
 
 ---
 
