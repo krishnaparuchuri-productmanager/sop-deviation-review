@@ -35,7 +35,13 @@ export async function postReview(userInput, caseId = null) {
     let detail = `HTTP ${res.status}`
     try {
       const err = await res.json()
-      detail = err?.detail ?? JSON.stringify(err)
+      const raw = err?.detail
+      // FastAPI 422 returns detail as an array of validation error objects
+      if (Array.isArray(raw)) {
+        detail = raw.map(d => d.msg ?? JSON.stringify(d)).join('; ')
+      } else {
+        detail = raw ?? JSON.stringify(err)
+      }
     } catch (_) { /* ignore */ }
     throw new Error(detail)
   }

@@ -18,4 +18,4 @@ python-dotenv==1.2.2
 pydantic==2.13.4
 
 # --- Observability ---
-langsmith==0.3.45
+langsmith>=0.1.0
