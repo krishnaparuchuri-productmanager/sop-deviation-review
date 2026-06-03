@@ -2,8 +2,8 @@
 
 An AI-powered GMP deviation review assistant for pharmaceutical quality assurance teams. Analysts paste a free-text deviation scenario and receive a structured assessment — classification, severity rating, impact statement, immediate action steps, QA escalation decision, and a draft CAPA summary — in under 10 seconds.
 
-🔗 **Live demo:** [pharmacomplianceai.krishna1parchuri.workers.dev](https://pharmacomplianceai.krishna1parchuri.workers.dev)  
-📊 **Governed by:** [AgentOps dashboard](https://agentops.krishna1parchuri.workers.dev) — lifecycle, evals, cost tracking, LangSmith observability
+🔗 **Live demo:** [gmpdeviationreview.krishnaparuchuri.com](https://gmpdeviationreview.krishnaparuchuri.com)  
+📊 **Governed by:** [AgentOps dashboard](https://agentops.krishnaparuchuri.com) — lifecycle, evals, cost tracking, LangSmith observability
 
 ---
 
@@ -595,7 +595,7 @@ The application is deployed across two platforms:
 | Service | Platform | URL |
 |---|---|---|
 | Backend API | Railway | `https://sop-deviation-review-production.up.railway.app` |
-| Frontend SPA | Cloudflare Workers | `https://pharmacomplianceai.krishna1parchuri.workers.dev` |
+| Frontend SPA | Cloudflare Workers | `https://gmpdeviationreview.krishnaparuchuri.com` |
 
 ### Deploy frontend
 
@@ -626,7 +626,7 @@ Each trace contains:
 
 The trace push uses `LangSmithClient.create_run()` with explicit `start_time` and `end_time` so runs appear immediately in the LangSmith UI (pending runs without `end_time` never surface).
 
-> **Governed by AgentOps:** The `sop-deviation-review` agent lifecycle, eval results, cost records, and alerts are all tracked in the [AgentOps governance dashboard](https://agentops.krishna1parchuri.workers.dev).
+> **Governed by AgentOps:** The `sop-deviation-review` agent lifecycle, eval results, cost records, and alerts are all tracked in the [AgentOps governance dashboard](https://agentops.krishnaparuchuri.com).
 
 ---
 
