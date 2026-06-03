@@ -21,6 +21,13 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 try:
+    from langsmith import traceable
+except ImportError:
+    def traceable(**_kw):           # no-op decorator if langsmith not installed
+        def _wrap(fn): return fn
+        return _wrap
+
+try:
     # Running via uvicorn from inside backend/
     from retrieval import search_sop
     from prompts import assess_deviation_traced, SAFE_FALLBACK
@@ -148,6 +155,74 @@ def _chunk_ids_json(chunks: list[dict]) -> str:
         500: {"description": "Internal server error"},
     },
 )
+@traceable(
+    name="gmp-deviation-review",
+    run_type="chain",
+    tags=["pharma", "gmp", "deviation"],
+    metadata={"project": "sop-deviation-review", "prompt_version": _PROMPT_VERSION},
+)
+def _run_review_pipeline(user_input: str, case_id: str | None) -> dict:
+    """
+    Inner traceable pipeline — separated from the FastAPI handler so LangSmith
+    receives clean inputs/outputs without FastAPI Request objects.
+    Returns the raw assessment dict + metadata for the response builder.
+    """
+    trace_id  = str(uuid.uuid4())
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    t0        = time.monotonic()
+
+    retrieval_error: str | None = None
+    try:
+        sop_chunks: list[dict] = search_sop(user_input, top_k=3)
+    except Exception as exc:
+        retrieval_error = f"Retrieval failed: {type(exc).__name__}: {exc}"
+        sop_chunks = []
+
+    assessment, trace_meta = assess_deviation_traced(
+        user_text  = user_input,
+        sop_chunks = sop_chunks,
+    )
+
+    latency_ms = int((time.monotonic() - t0) * 1000)
+
+    log_trace({
+        "trace_id":         trace_id,
+        "timestamp":        timestamp,
+        "user_input":       user_input,
+        "retrieved_chunks": _chunk_ids_json(sop_chunks),
+        "prompt_version":   _PROMPT_VERSION,
+        "model_output":     trace_meta.model_output_raw or None,
+        "latency_ms":       latency_ms,
+        "input_tokens":     trace_meta.input_tokens,
+        "output_tokens":    trace_meta.output_tokens,
+        "error":            trace_meta.error or retrieval_error,
+    })
+
+    try:
+        push_trace(
+            trace_id      = trace_id,
+            timestamp     = timestamp,
+            user_input    = user_input,
+            assessment    = assessment,
+            input_tokens  = trace_meta.input_tokens or 0,
+            output_tokens = trace_meta.output_tokens or 0,
+            latency_ms    = latency_ms,
+            is_fallback   = trace_meta.is_fallback,
+        )
+        push_daily_cost()
+    except Exception:
+        pass
+
+    return {
+        "assessment":   assessment,
+        "trace_meta":   trace_meta,
+        "sop_chunks":   sop_chunks,
+        "trace_id":     trace_id,
+        "case_id":      case_id,
+        "latency_ms":   latency_ms,
+    }
+
+
 def review_deviation(request: Request, body: ReviewRequest) -> ReviewResponse:
     """
     End-to-end deviation review pipeline:
@@ -166,56 +241,11 @@ def review_deviation(request: Request, body: ReviewRequest) -> ReviewResponse:
             detail="Too many requests. Please wait a moment before trying again.",
         )
 
-    t0        = time.monotonic()
-    trace_id  = str(uuid.uuid4())
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-    # 1. Retrieve relevant SOP chunks -----------------------------------------
-    retrieval_error: str | None = None
-    try:
-        sop_chunks: list[dict] = search_sop(body.user_input, top_k=3)
-    except Exception as exc:  # noqa: BLE001
-        retrieval_error = f"Retrieval failed: {type(exc).__name__}: {exc}"
-        sop_chunks = []
-
-    # 2. Run the LLM assessment pipeline --------------------------------------
-    assessment, trace_meta = assess_deviation_traced(
-        user_text  = body.user_input,
-        sop_chunks = sop_chunks,
-    )
-
-    latency_ms = int((time.monotonic() - t0) * 1000)
-
-    # 3. Persist trace record (best-effort) -----------------------------------
-    log_trace({
-        "trace_id":         trace_id,
-        "timestamp":        timestamp,
-        "user_input":       body.user_input,
-        "retrieved_chunks": _chunk_ids_json(sop_chunks),
-        "prompt_version":   _PROMPT_VERSION,
-        "model_output":     trace_meta.model_output_raw or None,
-        "latency_ms":       latency_ms,
-        "input_tokens":     trace_meta.input_tokens,
-        "output_tokens":    trace_meta.output_tokens,
-        # Surface the first error encountered: LLM error takes priority over retrieval
-        "error":            trace_meta.error or retrieval_error,
-    })
-
-    # 4. Push to AgentOps (best-effort, non-blocking) --------------------------
-    try:
-        push_trace(
-            trace_id      = trace_id,
-            timestamp     = timestamp,
-            user_input    = body.user_input,
-            assessment    = assessment,
-            input_tokens  = trace_meta.input_tokens or 0,
-            output_tokens = trace_meta.output_tokens or 0,
-            latency_ms    = latency_ms,
-            is_fallback   = trace_meta.is_fallback,
-        )
-        push_daily_cost()
-    except Exception:   # noqa: BLE001
-        pass  # Never let AgentOps push break the review response
+    # 1–4. Run traceable pipeline (LangSmith captures full span) --------------
+    result     = _run_review_pipeline(body.user_input, body.case_id)
+    assessment = result["assessment"]
+    trace_meta = result["trace_meta"]
+    sop_chunks = result["sop_chunks"]
 
     # 5. Build and return response --------------------------------------------
     return ReviewResponse(
@@ -227,8 +257,8 @@ def review_deviation(request: Request, body: ReviewRequest) -> ReviewResponse:
         missing_info      = assessment.get("missing_info",     SAFE_FALLBACK["missing_info"]),
         draft_summary     = assessment.get("draft_summary",    SAFE_FALLBACK["draft_summary"]),
         retrieved_sources = _shape_sources(sop_chunks),
-        trace_id          = trace_id,
-        case_id           = body.case_id,
-        latency_ms        = latency_ms,
+        trace_id          = result["trace_id"],
+        case_id           = result["case_id"],
+        latency_ms        = result["latency_ms"],
         is_fallback       = trace_meta.is_fallback,
     )

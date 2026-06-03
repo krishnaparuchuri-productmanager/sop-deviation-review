@@ -16,3 +16,6 @@ numpy==2.4.4
 # --- Utilities ---
 python-dotenv==1.2.2
 pydantic==2.13.4
+
+# --- Observability ---
+langsmith==0.3.45
