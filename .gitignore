@@ -32,3 +32,9 @@ dist/
 .idea/
 *.swp
 screenshots/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
