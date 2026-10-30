@@ -3,7 +3,7 @@ rate_limit.py — Simple in-memory per-IP rate limiter.
 
 Uses a sliding-window counter (last 60 seconds) stored in a module-level dict.
 Thread-safe via a standard Lock.  Resets on process restart — suitable for
-a single-instance portfolio deployment on Railway.
+a single-instance local deployment (the Cloudflare Worker uses D1 instead).
 
 Usage:
     from rate_limit import is_rate_limited

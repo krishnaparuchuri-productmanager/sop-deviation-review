@@ -8,7 +8,7 @@
  *
  * Data flow:
  *   Mount  → GET /api/evals/results  (show previous run if one exists)
- *   Button → POST /api/evals/run     (≈3-6 min; spinner shown)
+ *   Button → POST /api/evals/runs …  (one request per case, ≈3-6 min; progress shown)
  *          → GET /api/evals/results  (refresh table with new run)
  */
 
@@ -345,6 +345,7 @@ export default function EvalsPage() {
   const [fetchError, setFetchError] = useState(null)
   const [activeTab,  setActiveTab]  = useState('actual')
   const [elapsed,    setElapsed]    = useState(0)      // seconds ticker during run
+  const [progress,   setProgress]   = useState(null)   // { done, total } during run
 
   // ── Fetch results (latest or specific run_id) ──────────────────────────────
   const fetchResults = useCallback(async (runId = null) => {
@@ -372,13 +373,15 @@ export default function EvalsPage() {
   async function handleRunEvals() {
     setRunning(true)
     setRunError(null)
+    setProgress(null)
     try {
-      await runEvals()         // ≈3-6 min blocking call
+      await runEvals((done, total) => setProgress({ done, total }))   // ≈3-6 min
       await fetchResults()     // refresh with new run data
     } catch (e) {
       setRunError(friendlyError(e))
     } finally {
       setRunning(false)
+      setProgress(null)
     }
   }
 
@@ -411,7 +414,9 @@ export default function EvalsPage() {
         <div className="flex items-center gap-3">
           {running && (
             <span className="text-xs text-amber-600 tabular-nums font-medium animate-pulse">
-              ⏱ {fmtElapsed(elapsed)} — typically 3–6 min…
+              ⏱ {fmtElapsed(elapsed)}
+              {progress ? ` — case ${Math.min(progress.done + 1, progress.total)} of ${progress.total}` : ''}
+              {' '}— typically 3–6 min…
             </span>
           )}
           <button
@@ -437,7 +442,8 @@ export default function EvalsPage() {
           <div>
             <strong>Eval run in progress.</strong>{' '}
             The pipeline calls Claude Haiku for each of the 15 cases, then scores every output
-            with an LLM judge. This takes 3–6 minutes. Do not close or refresh this tab.
+            with an LLM judge. This takes 3–6 minutes. Keep this tab open — the run is driven
+            from here, one case at a time.
           </div>
         </div>
       )}

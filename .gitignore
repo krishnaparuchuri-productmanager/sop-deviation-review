@@ -32,3 +32,6 @@ dist/
 .idea/
 *.swp
 screenshots/
+
+# Wrangler local state
+.wrangler/

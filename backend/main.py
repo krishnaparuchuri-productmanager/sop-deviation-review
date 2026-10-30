@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     """Initialize resources on startup; clean up on shutdown."""
     # Ensure all database tables exist before the first request is served.
     init_db()
-    # Seed demo data if the DB is empty (first deploy on Railway).
+    # Seed demo data if the DB is empty (first startup).
     seed_demo_data()
     yield
     # Nothing to tear down in V1.

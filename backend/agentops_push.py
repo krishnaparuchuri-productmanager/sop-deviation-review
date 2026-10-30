@@ -7,7 +7,7 @@ Called automatically after:
   - On-demand sync  (POST /api/agentops/sync)
 
 Environment variables:
-  AGENTOPS_API_URL   — AgentOps backend base URL (Railway deployment)
+  AGENTOPS_API_URL   — AgentOps API base URL, e.g. https://agentops.krishnaparuchuri.com/api
   AGENTOPS_AGENT_ID  — Agent ID registered in AgentOps (default: gmp-deviation-review)
 
 If AGENTOPS_API_URL is not set, all push calls are silently skipped (safe for
@@ -53,6 +53,8 @@ def _api(method: str, path: str, body: dict | None = None) -> dict | None:
     data = json.dumps(body).encode() if body else None
     req  = urlrequest.Request(url, data=data, method=method)
     req.add_header("Content-Type", "application/json")
+    # Cloudflare blocks the default "Python-urllib" User-Agent (error 1010)
+    req.add_header("User-Agent", "sop-deviation-review/1.0")
     try:
         with urlrequest.urlopen(req, timeout=10) as resp:
             return json.loads(resp.read())

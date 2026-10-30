@@ -1,15 +1,15 @@
 /**
- * client.js — All fetch calls to the FastAPI backend.
+ * client.js — All fetch calls to the backend API.
  *
- * The Vite dev-server proxies /api/* to http://localhost:8001, so we use
- * relative paths here. In production, point VITE_API_BASE_URL at the real
- * backend origin.
+ * In production the API is served by the same Cloudflare Worker as this app,
+ * so paths are relative. The Vite dev-server proxies /api/* to the local
+ * backend. VITE_API_BASE_URL can still point at another origin if needed.
  */
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? ''
 
 // Eval token — set VITE_EVAL_TOKEN in your .env.local (never commit this value).
-// The backend checks this against the EVAL_SECRET_TOKEN env var on Railway.
+// The backend checks this against the EVAL_SECRET_TOKEN Worker secret.
 const EVAL_TOKEN = import.meta.env.VITE_EVAL_TOKEN ?? ''
 
 /**
@@ -75,17 +75,8 @@ export async function getTraces(limit = 20) {
   return res.json()
 }
 
-/**
- * POST /api/evals/run
- *
- * Triggers a full evaluation run. Takes 3–6 minutes to complete.
- * @returns {Promise<object>} - EvalRunResponse {
- *   run_id, duration_s, total_rows,
- *   actual: DimensionSummary, baseline: DimensionSummary
- * }
- */
-export async function runEvals() {
-  const res = await fetch(`${BASE}/api/evals/run`, {
+async function evalPost(path) {
+  const res = await fetch(`${BASE}/api/evals/runs${path}`, {
     method: 'POST',
     headers: { 'X-Eval-Token': EVAL_TOKEN },
   })
@@ -98,6 +89,29 @@ export async function runEvals() {
     throw new Error(detail)
   }
   return res.json()
+}
+
+/**
+ * Run the full evaluation suite. Takes 3–6 minutes in total.
+ *
+ * The backend scores one case per request: POST /api/evals/runs starts a run,
+ * POST /api/evals/runs/{run_id}/cases/{case_id} scores each case, and
+ * POST /api/evals/runs/{run_id}/finish returns the summary.
+ *
+ * @param {(done: number, total: number) => void} onProgress - Called after each case.
+ * @returns {Promise<object>} - EvalRunResponse {
+ *   run_id, duration_s, total_rows,
+ *   actual: DimensionSummary, baseline: DimensionSummary
+ * }
+ */
+export async function runEvals(onProgress = () => {}) {
+  const { run_id, case_ids } = await evalPost('')
+  onProgress(0, case_ids.length)
+  for (const [i, caseId] of case_ids.entries()) {
+    await evalPost(`/${encodeURIComponent(run_id)}/cases/${encodeURIComponent(caseId)}`)
+    onProgress(i + 1, case_ids.length)
+  }
+  return evalPost(`/${encodeURIComponent(run_id)}/finish`)
 }
 
 /**

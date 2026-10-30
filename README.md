@@ -196,32 +196,39 @@ Results are stored in `eval_results` SQLite table and surfaced in the Evals scre
 
 ## Project Architecture <a name="architecture"></a>
 
+**Production** — one Cloudflare Worker serves the React app and the API:
+
 ```
-Browser (React 18 + Vite, port 5173)
+Browser ── https://gmpdeviationreview.krishnaparuchuri.com
     │
-    │  /api/*  (proxied)
     ▼
-FastAPI (uvicorn, port 8001)
+Cloudflare Worker "pharmacomplianceai" (worker/)
+    ├── static assets: frontend/dist (React SPA)
     ├── POST /api/review      — submit deviation, returns assessment
     ├── GET  /api/traces      — list historical reviews
     ├── POST /api/feedback    — submit thumbs-up / thumbs-down
     ├── GET  /api/feedback    — list feedback with deviation text
     ├── GET  /api/dashboard/metrics — aggregate analytics
-    ├── POST /api/evals/run   — run eval suite (~3-6 min)
+    ├── POST /api/evals/runs[/{run}/cases/{case} | /{run}/finish] — eval suite, one case per request
     └── GET  /api/evals/results — fetch last eval run
     │
-    ├── retrieval.py  (TF-IDF index over SOPs)
-    ├── llm_client.py (Anthropic SDK, prompt caching)
-    ├── prompts.py    (tool schema, retry logic)
-    └── eval_runner.py (LLM-as-judge, baseline comparison)
+    ├── retrieval.ts  (TF-IDF index fitted by scikit-learn, shipped as JSON)
+    ├── llm.ts        (Anthropic Messages API, prompt caching, retries)
+    ├── prompts.ts    (tool schema, retry logic)
+    ├── evals.ts      (LLM-as-judge, baseline comparison)
+    └── agentops.ts   (service binding to the AgentOps Worker)
     │
     ▼
-SQLite (backend/db/sop_assistant.db)
-    ├── cases
-    ├── traces
-    ├── feedback
-    ├── eval_results
-    └── metrics
+Cloudflare D1 "sop-deviation-review" (migrations/)
+    ├── traces, feedback, eval_results, cases, metrics
+    └── eval_runs, rate_limit_hits
+```
+
+**Local development** — the original FastAPI backend in `backend/` (the Worker is a
+parity-tested port of it; prompts, retrieval and responses are identical):
+
+```
+Browser (React 18 + Vite, port 5173) ── /api/* proxied ──▶ FastAPI (uvicorn, port 8001) ──▶ SQLite
 ```
 
 **Request flow for a single deviation review:**
@@ -229,7 +236,7 @@ SQLite (backend/db/sop_assistant.db)
 1. User submits scenario via `ChatPage.jsx` → `POST /api/review`
 2. `search_sop()` retrieves top-3 SOP chunks by TF-IDF cosine similarity
 3. `assess_deviation_traced()` calls Haiku with forced tool use (up to 3 attempts)
-4. Response validated; trace written to SQLite with token counts and latency
+4. Response validated; trace written to the database with token counts and latency
 5. `ResultsPage.jsx` displays the 7-field structured assessment
 6. User submits thumbs-up/down via `POST /api/feedback`
 
@@ -290,24 +297,21 @@ The backend loads this automatically via `python-dotenv` at startup. `ANTHROPIC_
 
 > **Never commit your `.env` file.** The `.gitignore` excludes it.
 
-### Production (Railway)
+### Production (Cloudflare Worker)
 
-The following environment variables are set in the Railway dashboard for the backend service:
+Secrets are set on the Worker with `npx wrangler secret put <NAME>` (never committed):
 
-| Variable | Description |
+| Secret | Description |
 |---|---|
-| `ANTHROPIC_API_KEY` | Anthropic secret key |
-| `LANGSMITH_API_KEY` | LangSmith APAC workspace key (`lsv2_pt_...`) |
-| `LANGSMITH_ENDPOINT` | `https://apac.api.smith.langchain.com` |
-| `LANGSMITH_PROJECT` | `gmp-deviation-review` |
-| `LANGCHAIN_API_KEY` | Same as `LANGSMITH_API_KEY` (SDK compatibility) |
-| `LANGCHAIN_PROJECT` | `gmp-deviation-review` |
-| `LANGCHAIN_TRACING_V2` | `true` |
-| `LANGSMITH_TRACING` | `true` |
+| `ANTHROPIC_API_KEY` | Anthropic secret key (required) |
+| `EVAL_SECRET_TOKEN` | Enables **Run Evals**; must match the `X-Eval-Token` the frontend sends (`VITE_EVAL_TOKEN` at build time). Unset = evals are locked. |
+| `LANGSMITH_API_KEY` | LangSmith APAC workspace key (`lsv2_pt_...`), optional |
 
-> **APAC endpoint required** — this LangSmith workspace is on the Asia-Pacific region. Using the default US endpoint (`api.smith.langchain.com`) causes 403 errors. Always set `LANGSMITH_ENDPOINT` explicitly.
+Plain settings live in `wrangler.toml`: `LANGSMITH_ENDPOINT` (`https://apac.api.smith.langchain.com`), `LANGSMITH_PROJECT` (`gmp-deviation-review`), the D1 binding `DB`, and the `AGENTOPS` service binding to the AgentOps Worker.
 
-LangSmith traces are pushed in a background thread (non-blocking) after each review response is returned. The request latency is unaffected even if LangSmith is unreachable.
+> **APAC endpoint required** — this LangSmith workspace is on the Asia-Pacific region. Using the default US endpoint (`api.smith.langchain.com`) causes 403 errors.
+
+LangSmith runs and AgentOps traces/costs are pushed after the response is sent (`ctx.waitUntil`), so request latency is unaffected even if either is unreachable.
 
 ---
 
@@ -375,12 +379,23 @@ The eval suite runs 15 pre-labeled golden cases through the full pipeline and sc
 
 ### Via the UI
 
-Navigate to `http://localhost:5173/evals` and click **Run Evals**. A live elapsed timer shows progress. When complete, the results table populates with per-case scores and a summary comparing agent vs. always-escalate baseline.
+Navigate to `/evals` and click **Run Evals**. A live timer and "case N of 15" counter show progress. When complete, the results table populates with per-case scores and a summary comparing agent vs. always-escalate baseline. Requires the eval token (see Environment Variables).
 
 ### Via the API
 
+On the Worker, a run is driven one case per request (keeps each request short):
+
 ```bash
-curl -X POST http://localhost:8001/api/evals/run
+H="X-Eval-Token: $EVAL_SECRET_TOKEN"
+RUN=$(curl -s -X POST -H "$H" https://gmpdeviationreview.krishnaparuchuri.com/api/evals/runs)   # {run_id, case_ids}
+# for each case_id: POST /api/evals/runs/{run_id}/cases/{case_id}
+# then:             POST /api/evals/runs/{run_id}/finish  → summary
+```
+
+Against the local FastAPI backend the whole run is one call:
+
+```bash
+curl -X POST -H "X-Eval-Token: $EVAL_SECRET_TOKEN" http://localhost:8001/api/evals/run
 ```
 
 ### Via Python directly
@@ -507,6 +522,19 @@ sop-deviation-review/
 ├── migrate_eval_results.py       # One-time migration: rebuild eval_results schema
 └── migrate_feedback.py           # One-time migration: add reviewer_correction column
 │
+├── wrangler.toml                 # Cloudflare Worker config: assets, D1, AgentOps binding
+├── worker/                       # Production API (TypeScript port of backend/)
+│   ├── index.ts                  # Router + routes (review, traces, feedback, dashboard, evals)
+│   ├── retrieval.ts              # TF-IDF query vectoriser + ranking
+│   ├── llm.ts                    # Anthropic Messages API client
+│   ├── prompts.ts                # System prompt, tool schema, validation, retries
+│   ├── evals.ts                  # LLM-as-judge eval runner
+│   ├── agentops.ts / langsmith.ts# Best-effort observability pushes
+│   └── data/                     # Generated: sop_index.json, eval_cases.json
+├── migrations/                   # D1 schema + generated demo seed
+├── scripts/
+│   └── build_worker_data.py      # Regenerates worker/data + demo seed from backend/ sources
+│
 ├── backend/
 │   ├── main.py                   # FastAPI app, CORS, router registration, lifespan
 │   ├── llm_client.py             # Anthropic SDK wrapper, prompt caching, LLMResponse
@@ -530,7 +558,6 @@ sop-deviation-review/
 │   ├── package.json
 │   ├── vite.config.js            # Port 5173, /api proxy to :8001
 │   ├── tailwind.config.js
-│   ├── wrangler.toml             # Cloudflare Workers deploy config (SPA routing)
 │   └── src/
 │       ├── App.jsx               # Router, login gate, layout shell
 │       ├── api/
@@ -580,36 +607,39 @@ sop-deviation-review/
 | `POST` | `/api/feedback` | Rate a review; body: `{"trace_id": "...", "rating": 1}` |
 | `GET` | `/api/feedback?limit=50` | List feedback with deviation text |
 | `GET` | `/api/dashboard/metrics` | Aggregate stats |
-| `POST` | `/api/evals/run` | Run the full eval suite |
+| `POST` | `/api/evals/runs` → `/{run_id}/cases/{case_id}` → `/{run_id}/finish` | Run the eval suite, one case per request (`X-Eval-Token` required; local FastAPI: `POST /api/evals/run`) |
 | `GET` | `/api/evals/results` | Fetch latest eval results |
 | `GET` | `/health` | Health check |
 
-Full interactive docs at: `http://localhost:8001/docs`
+Full interactive docs for the local FastAPI backend at: `http://localhost:8001/docs`
 
 ---
 
 ## Deployment <a name="deployment"></a>
 
-The application is deployed across two platforms:
+Frontend and API are one Cloudflare Worker (`pharmacomplianceai`) with a D1 database:
 
 | Service | Platform | URL |
 |---|---|---|
-| Backend API | Railway | `https://sop-deviation-review-production.up.railway.app` |
-| Frontend SPA | Cloudflare Workers | `https://gmpdeviationreview.krishnaparuchuri.com` |
+| App + API | Cloudflare Workers + D1 | `https://gmpdeviationreview.krishnaparuchuri.com` (API under `/api`) |
 
-### Deploy frontend
+### Deploy
+
+Deploys are manual (pushing to GitHub does not deploy). From the project root:
 
 ```bash
-cd frontend
-npm run build
+cd frontend && npm run build && cd ..
+npx wrangler d1 migrations apply sop-deviation-review --remote   # only when migrations/ changed
 npx wrangler deploy
 ```
 
-The `wrangler.toml` in `frontend/` configures the Worker name and sets `not_found_handling = "single-page-application"` so all routes serve `index.html`.
+`wrangler.toml` serves `frontend/dist` with `not_found_handling = "single-page-application"` and sends `/api/*` and `/health` to the Worker first.
 
-### Deploy backend
+If you change the SOPs, eval cases or demo seed in `backend/`, regenerate the Worker's copies first:
 
-The backend auto-deploys on Railway when commits are pushed to the `main` branch. No manual deploy step needed.
+```bash
+python scripts/build_worker_data.py
+```
 
 ---
 

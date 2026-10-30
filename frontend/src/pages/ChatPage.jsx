@@ -60,8 +60,8 @@ export default function ChatPage() {
   const [coldStart, setColdStart]   = useState(false)   // shows after 5s of loading
   const coldStartTimer              = useRef(null)
 
-  // Show a "server waking up" hint if the backend takes more than 5 seconds.
-  // Railway free tier cold-starts can take 20–30 s after a period of inactivity.
+  // Show a "still working" hint if the review takes more than 5 seconds
+  // (the LLM call, plus up to two retries, can take 20–30 s).
   useEffect(() => {
     if (loading) {
       coldStartTimer.current = setTimeout(() => setColdStart(true), 5000)
@@ -185,9 +185,9 @@ export default function ChatPage() {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
             </svg>
             <span>
-              <strong className="font-semibold">Server is waking up…</strong>{' '}
-              The backend runs on a free hosting tier and may take up to 30 seconds
-              after a period of inactivity. Please wait — your request is on its way.
+              <strong className="font-semibold">Still reviewing…</strong>{' '}
+              The assistant is checking the SOPs and drafting the assessment. This can
+              take up to 30 seconds. Please wait — your request is on its way.
             </span>
           </div>
         )}

@@ -1,0 +1,35 @@
+# One Worker serves the React frontend (static assets) and the API (worker/).
+# Build the frontend first: cd frontend && npm run build
+name = "pharmacomplianceai"
+main = "worker/index.ts"
+compatibility_date = "2026-05-21"
+
+[assets]
+directory = "./frontend/dist"
+not_found_handling = "single-page-application"
+# API paths always reach the Worker, never the SPA fallback.
+run_worker_first = ["/api/*", "/health"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sop-deviation-review"
+database_id = "8003fbe7-5124-4ba6-9372-b3de0d6fbdac"
+migrations_dir = "migrations"
+
+# AgentOps governance dashboard (separate Worker on the same account).
+[[services]]
+binding = "AGENTOPS"
+service = "agentops"
+
+[vars]
+# LangSmith workspace is in the APAC region; the default US endpoint returns 403.
+LANGSMITH_ENDPOINT = "https://apac.api.smith.langchain.com"
+LANGSMITH_PROJECT = "gmp-deviation-review"
+
+[observability]
+enabled = true
+
+# Secrets (set with `npx wrangler secret put <NAME>`, never committed):
+#   ANTHROPIC_API_KEY  — required for reviews and evals
+#   EVAL_SECRET_TOKEN  — enables the Run Evals button (sent as X-Eval-Token)
+#   LANGSMITH_API_KEY  — optional run logging (with LANGSMITH_ENDPOINT / LANGSMITH_PROJECT)
